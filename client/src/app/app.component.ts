@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 @Component({
   selector: 'app-root',
@@ -8,6 +8,12 @@ import { HomeComponent } from './home/home.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  title = 'client';
+export class AppComponent implements OnInit {
+
+  constructor(private router : Router ){}
+
+  ngOnInit(): void {
+    this.router.navigate(['home'])
+  }
+  title = 'MethFlex';
 }
