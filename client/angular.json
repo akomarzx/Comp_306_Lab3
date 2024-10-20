@@ -33,7 +33,8 @@
             ],
             "styles": [
               "m3-theme.scss",
-              "src/styles.scss"
+              "src/styles.scss",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
             "scripts": []
           },

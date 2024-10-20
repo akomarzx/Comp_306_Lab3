@@ -1,1 +1,61 @@
-<p>login works!</p>
+<div class="container vh-100 d-flex flex-column justify-content-between">
+    <mat-toolbar class="row">
+        <h1>MethFlex</h1>
+    </mat-toolbar>
+    <div class="row d-flex justify-content-center">
+        <mat-card appearance="raised" class="w-25">
+            <mat-card-header class="my-1 d-flex justify-content-center">
+                <img mat-card-md-image src="./assets/movie.png">
+            </mat-card-header>
+            <mat-tab-group>
+                <mat-tab label="Login">
+                    <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
+                        <mat-card-content>
+                            <mat-form-field>
+                                <input matInput placeholder="User Name" formControlName="username">
+                            </mat-form-field>
+                            <br />
+                            <mat-form-field>
+                                <input type="password" matInput placeholder="Password" formControlName="password" />
+                            </mat-form-field>
+                            <div>
+                                <span>{{message | async}}</span>
+                            </div>
+                        </mat-card-content>
+                        <mat-card-actions class="my-2">
+                            <div>
+                                <button mat-raised-button [disabled]="!this.loginForm.valid">Login</button>
+                            </div>
+                        </mat-card-actions>
+                    </form>
+                </mat-tab>
+                <mat-tab label="Register">
+                    <form [formGroup]="registrationForm" (ngSubmit)="onRegistrationSubmit()">
+                        <mat-card-content>
+                            <mat-form-field>
+                                <input matInput placeholder="User Name" formControlName="username">
+                            </mat-form-field>
+                            <br />
+                            <mat-form-field>
+                                <input type="password" matInput placeholder="Password" formControlName="password" />
+                            </mat-form-field>
+                            <div>
+                                <span>{{message | async}}</span>
+                            </div>
+                        </mat-card-content>
+                        <mat-card-actions class="my-2">
+                            <div class="button-flex-container">
+                                <button mat-raised-button type="submit"
+                                    [disabled]="!this.registrationForm.valid">Register</button>
+                            </div>
+                        </mat-card-actions>
+                    </form>
+                </mat-tab>
+            </mat-tab-group>
+        </mat-card>
+    </div>
+    <div class="row text-center my-1">
+        <a href="https://www.flaticon.com/free-icons/google-play-movie" title="google play movie icons">Google play
+            movie icons created by iconixar - Flaticon</a>
+    </div>
+</div>
