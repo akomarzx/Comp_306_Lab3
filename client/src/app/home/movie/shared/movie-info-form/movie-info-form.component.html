@@ -1,99 +1,61 @@
-<form [formGroup]="addressForm" novalidate (ngSubmit)="onSubmit()">
-  <mat-card class="shipping-card">
-    <mat-card-header>
-      <mat-card-title>Shipping Information</mat-card-title>
+<form [formGroup]="movieMetadataForm" novalidate (ngSubmit)="onSubmit()">
+  <mat-card class="p-2">
+    <mat-card-header class="my-3">
+      <mat-card-title>Movie Information</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <div class="row">
-        <div class="col">
-          <mat-form-field class="full-width">
-            <input matInput placeholder="Company" formControlName="company">
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <mat-form-field class="full-width">
-            <input matInput placeholder="First name" formControlName="firstName">
-            @if (addressForm.controls['firstName'].hasError('required')) {
-              <mat-error>First name is <strong>required</strong></mat-error>
-            }
-          </mat-form-field>
-        </div>
-        <div class="col">
-          <mat-form-field class="full-width">
-            <input matInput placeholder="Last name" formControlName="lastName">
-            @if (addressForm.controls['lastName'].hasError('required')) {
-              <mat-error>Last name is <strong>required</strong></mat-error>
+      <div class="row my-2">
+        <div class="column">
+          <mat-form-field class="w-100">
+            <input matInput placeholder="Title" formControlName="title">
+            @if (movieMetadataForm.controls['title'].hasError('required')) {
+            <mat-error>Title is <strong>required</strong></mat-error>
             }
           </mat-form-field>
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <mat-form-field class="full-width">
-            <textarea matInput placeholder="Address" formControlName="address"></textarea>
-            @if (addressForm.controls['address'].hasError('required')) {
-              <mat-error>Address is <strong>required</strong></mat-error>
-            }
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          @if (hasUnitNumber) {
-            <mat-form-field class="full-width">
-              <textarea matInput placeholder="Address 2" formControlName="address2"></textarea>
-            </mat-form-field>
-          } @else {
-            <button mat-button type="button" (click)="hasUnitNumber = !hasUnitNumber">
-              + Add C/O, Apt, Suite, Unit
-            </button>
-          }
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <mat-form-field class="full-width">
-            <input matInput placeholder="City" formControlName="city">
-            @if (addressForm.controls['city'].hasError('required')) {
-              <mat-error>City is <strong>required</strong></mat-error>
-            }
-          </mat-form-field>
-        </div>
-        <div class="col">
-          <mat-form-field class="full-width">
-            <mat-select placeholder="State" formControlName="state">
-              @for (state of states; track state) {
-                <mat-option [value]="state.abbreviation">{{ state.name }}</mat-option>
+      <div class="row my-2">
+        <div class="column">
+          <mat-form-field class="w-100">
+            <mat-select placeholder="Genre" formControlName="genre">
+              @for (genre of genres; track genre) {
+              <mat-option [value]="genre.name">{{ genre.name }}</mat-option>
               }
             </mat-select>
-            @if (addressForm.controls['state'].hasError('required')) {
-              <mat-error>State is <strong>required</strong></mat-error>
+            @if (movieMetadataForm.controls['genre'].hasError('required')) {
+            <mat-error>Genre is <strong>required</strong></mat-error>
             }
           </mat-form-field>
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <mat-form-field class="full-width">
-            <input matInput #postalCode maxlength="5" placeholder="Postal Code" type="number" formControlName="postalCode">
-            <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint>
+      <div class="row my-2">
+        <div class="column">
+          <mat-form-field class="w-100">
+            <input matInput placeholder="Director(s)" formControlName="director">
+            @if (movieMetadataForm.controls['director'].hasError('required')) {
+            <mat-error>Director is <strong>required</strong></mat-error>
+            }
           </mat-form-field>
         </div>
+
       </div>
-      <div class="row">
-        <div class="col">
-          <mat-radio-group formControlName="shipping">
-            <mat-radio-button value="free">Free Shipping</mat-radio-button>
-            <mat-radio-button value="priority">Priority Shipping</mat-radio-button>
-            <mat-radio-button value="nextday">Next Day Shipping</mat-radio-button>
-          </mat-radio-group>
+      <div class="row my-2">
+        <div class="column">
+          <mat-form-field class="w-100">
+            <mat-label>Release Date</mat-label>
+            <input matInput [matDatepicker]="picker">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker disabled="false"></mat-datepicker>
+            @if (movieMetadataForm.controls['releaseDate'].hasError('required')) {
+            <mat-error>Release Date is <strong>required</strong></mat-error>
+            }
+          </mat-form-field>
         </div>
       </div>
     </mat-card-content>
-    <mat-card-actions>
-      <button mat-raised-button color="primary" type="submit">Submit</button>
+    <mat-card-actions class="my-3 d-flex">
+      <button mat-raised-button type="submit" [disabled]="!this.movieMetadataForm.valid">Submit</button>
     </mat-card-actions>
   </mat-card>
 </form>
