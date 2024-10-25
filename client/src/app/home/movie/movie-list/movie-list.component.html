@@ -6,7 +6,7 @@
 </div>
 <div class="row px-2">
   @for (movie of this.moviesList$ | async; track movie.id) {
-  <mat-card class="w-25 m-2" appearance="outlined" (click)="onClickMovieCard(movie.id)">
+  <mat-card class="movie-card m-2" appearance="outlined" (click)="onClickMovieCard(movie.id)">
     <mat-card-header>
       <mat-card-title>{{movie.title}}</mat-card-title>
       <mat-card-subtitle>Directed By: {{movie.director}}</mat-card-subtitle>
