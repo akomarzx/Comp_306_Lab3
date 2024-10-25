@@ -4,7 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { inject } from '@angular/core';
 import { UserSecurityService } from './services/user-security.service';
 import { MovieListComponent } from './home/movie/movie-list/movie-list.component';
-import { MovieInformationComponent } from './home/movie/movie-information/movie-information.component';
+import { MovieInformationComponent } from './home/movie/movie-list/movie-information/movie-information.component';
 
 export const routes: Routes = [
     {
@@ -24,7 +24,7 @@ export const routes: Routes = [
         // ],
         children : [
             {path: 'movies', component: MovieListComponent},
-            {path: 'movise/:id', component: MovieInformationComponent}
+            {path: 'movies/:id', component: MovieInformationComponent}
         ]
     },
     { path: 'login', component: LoginComponent }

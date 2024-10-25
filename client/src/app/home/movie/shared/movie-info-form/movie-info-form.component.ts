@@ -34,6 +34,7 @@ export class MovieInfoFormComponent {
 
   movieMetadataForm = this.fb.group({
       title: [null, Validators.required],
+      summary: [null, Validators.required],
       genre: [null, Validators.required],
       director: [null, Validators.required],
       releaseDate: [null, Validators.required],

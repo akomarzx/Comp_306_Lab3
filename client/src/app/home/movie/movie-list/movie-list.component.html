@@ -5,20 +5,15 @@
   </button>
 </div>
 <div class="row px-2">
-  @for (item of [1,2,3,4,5,6,7,8,9,10]; track item) {
-  <mat-card class="w-25 m-2" appearance="outlined">
+  @for (movie of this.moviesList$ | async; track movie.id) {
+  <mat-card class="w-25 m-2" appearance="outlined" (click)="onClickMovieCard(movie.id)">
     <mat-card-header>
-      <div mat-card-avatar class="example-header-image"></div>
-      <mat-card-title>Shiba Inu</mat-card-title>
-      <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+      <mat-card-title>{{movie.title}}</mat-card-title>
+      <mat-card-subtitle>Directed By: {{movie.director}}</mat-card-subtitle>
     </mat-card-header>
     <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
     <mat-card-content>
-      <p>
-        The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-        A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-        bred for hunting.
-      </p>
+      <p>{{movie.summary}}</p>
     </mat-card-content>
     <mat-card-actions>
       <button mat-button>LIKE</button>

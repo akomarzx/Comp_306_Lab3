@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input, signal, WritableSignal } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-movie-information',
@@ -8,5 +9,12 @@ import { Component } from '@angular/core';
   styleUrl: './movie-information.component.scss'
 })
 export class MovieInformationComponent {
+
+  idx? : WritableSignal<number>
+
+  @Input()
+  set id(id: number) {
+    this.idx = signal(id)
+  }
 
 }

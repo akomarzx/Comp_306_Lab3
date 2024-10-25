@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, Signal, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,8 +8,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import {MatIconModule} from '@angular/material/icon';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserSecurityService } from '../services/user-security.service';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
@@ -22,8 +20,7 @@ import { Router } from '@angular/router';
     MatToolbarModule,
     MatTabsModule,
     MatIconModule,
-    ReactiveFormsModule,
-    AsyncPipe
+    ReactiveFormsModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -32,14 +29,14 @@ export class LoginComponent implements OnInit, OnDestroy{
 
   loginForm : FormGroup;
   registrationForm : FormGroup;
-  message : BehaviorSubject<string>;
+  message : WritableSignal<String>;
 
 
   constructor(private formBuilder : FormBuilder, 
     private userSecService : UserSecurityService, 
     private router : Router){
 
-    this.message = new BehaviorSubject<string>('')
+    this.message = signal('')
 
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
@@ -65,7 +62,7 @@ export class LoginComponent implements OnInit, OnDestroy{
     if(this.userSecService.authenticateUser(username, password)) {
       this.router.navigate(['home'])
     } else {
-      this.message.next('Incorrect Credentials');
+      this.message.set("Incorrect Credentials")
     }
     
   }
