@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../models/User';
 
 @Injectable({
@@ -7,27 +7,31 @@ import { User } from '../models/User';
 })
 export class UserSecurityService {
 
-  currentUser : BehaviorSubject<User|null>
+  private user : BehaviorSubject<User|null>
   
+  get currentUser() : User | null {
+    return this.user.getValue()
+  }
+
   constructor() {
-    this.currentUser = new BehaviorSubject<User|null>(null)
+    this.user = new BehaviorSubject<User|null>(null)
   }
 
   authenticateUser(username : string, password : string) : boolean{
-    let usernameTest = "ronald"
-    let passwordTest = "123456789"
+    let usernameTest = "r"
+    let passwordTest = "1"
     let userId = 1
     let isValid = username === usernameTest && password === passwordTest
     
     if(isValid) {
-      this.currentUser.next(new User(userId, username));
+      this.user.next(new User(userId, username));
     }
 
     return isValid   
   }
 
   isAuthenticated() : Boolean {
-    return this.currentUser.value != null
+    return this.user.getValue() != null
   }
 
 }

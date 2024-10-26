@@ -4,20 +4,19 @@
     Add Movie
   </button>
 </div>
-<div class="row px-2">
+<div class="row">
   @for (movie of this.moviesList$ | async; track movie.id) {
   <mat-card class="movie-card m-2" appearance="outlined" (click)="onClickMovieCard(movie.id)">
-    <mat-card-header>
+    <mat-card-header class="my-2">
       <mat-card-title>{{movie.title}}</mat-card-title>
-      <mat-card-subtitle>Directed By: {{movie.director}}</mat-card-subtitle>
     </mat-card-header>
     <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
-    <mat-card-content>
+    <mat-card-content class="my-2">
+      <p>Directed By: {{movie.director}}</p>
+      <p>Genre(s): {{movie.genre}}</p>
       <p>{{movie.summary}}</p>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-button>LIKE</button>
-      <button mat-button>SHARE</button>
     </mat-card-actions>
   </mat-card>
   }
