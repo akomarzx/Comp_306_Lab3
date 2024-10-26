@@ -8,6 +8,10 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
+import { MoviesService } from '../../../../services/movies.service';
+import { Movie } from '../../../../models/Movies';
+import { UserSecurityService } from '../../../../services/user-security.service';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-movie-info-form',
@@ -31,13 +35,20 @@ import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material
 export class MovieInfoFormComponent {
 
   private fb = inject(FormBuilder);
+  private movieService = inject(MoviesService)
+  private userService = inject(UserSecurityService)
+  private dialogRef = inject(MatDialogRef<MovieInfoFormComponent>)
+
+  private get movieMetadaControls() {
+    return this.movieMetadataForm.controls;
+  }
 
   movieMetadataForm = this.fb.group({
-      title: [null, Validators.required],
-      summary: [null, Validators.required],
-      genre: [null, Validators.required],
-      director: [null, Validators.required],
-      releaseDate: [null, Validators.required],
+      title: this.fb.nonNullable.control<String>('', [Validators.required]),
+      summary: this.fb.nonNullable.control<String>('', [Validators.required]),
+      genre: this.fb.nonNullable.control<String>('', [Validators.required]),
+      director: this.fb.nonNullable.control<String>('', [Validators.required]),
+      releaseDate: this.fb.nonNullable.control<String>('', [Validators.required])
   });
 
   genres = [
@@ -51,6 +62,20 @@ export class MovieInfoFormComponent {
   ];
 
   onSubmit(): void {
-    alert('Thanks!');
+
+    let newMovie : Movie = {
+      title: this.movieMetadaControls.title.value,
+      director: this.movieMetadaControls.director.value,
+      summary: this.movieMetadaControls.summary.value,
+      releaseDate: this.movieMetadaControls.releaseDate.value,
+      genre: this.movieMetadaControls.genre.value,
+      id: 10,
+      owner: this.userService.currentUser?.username!
+    }
+
+    this.movieService.addMovie(newMovie)
+    
+    this.dialogRef.close("Success!")
   }
+
 }

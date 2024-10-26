@@ -10,18 +10,18 @@ export const routes: Routes = [
     {
         path: 'home',
         component: HomeComponent,
-        // canActivate: [
-        //     () => {
-        //         const router = inject(Router)
-        //         const userService = inject(UserSecurityService)
-        //         if (userService.isAuthenticated()) {
-        //             return true
-        //         } else {
-        //             router.navigate(['/login'])
-        //             return false
-        //         }
-        //     }
-        // ],
+        canActivate: [
+            () => {
+                const router = inject(Router)
+                const userService = inject(UserSecurityService)
+                if (userService.isAuthenticated()) {
+                    return true
+                } else {
+                    router.navigate(['/login'])
+                    return false
+                }
+            }
+        ],
         children : [
             {path: 'movies', component: MovieListComponent},
             {path: 'movies/:id', component: MovieInformationComponent}

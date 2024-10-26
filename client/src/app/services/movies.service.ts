@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Movie } from '../models/Movies'
+import { UserSecurityService } from './user-security.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -8,7 +9,7 @@ export class MoviesService {
 
   private moviesList$: BehaviorSubject<Movie[]>
 
-  constructor() {
+  constructor(private userService: UserSecurityService) {
     this.moviesList$ = new BehaviorSubject<Movie[]>([
       {
         id: 1,
@@ -62,4 +63,7 @@ export class MoviesService {
     return this.moviesList$.asObservable()
   }
 
+  addMovie(newMovie : Movie) {
+    this.moviesList$.next([...this.moviesList$.getValue(), newMovie])
+  }
 }
