@@ -1,4 +1,4 @@
-<div class="row d-flex my-3 justify-content-end top-bar">
+<div class="row d-flex my-3">
   <div class="w-auto">
     <button mat-fab extended (click)="onAddMovie()">
       <mat-icon>add</mat-icon>
@@ -8,6 +8,6 @@
 </div>
 <div class="row">
   @for (movie of this.moviesList$ | async; track movie.id) {
-  <app-movie-card [movie]="movie" class="m-1"></app-movie-card>
+    <app-movie-card [movie]="movie" class="m-1"></app-movie-card>
   }
 </div>

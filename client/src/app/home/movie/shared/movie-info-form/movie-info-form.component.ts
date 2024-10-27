@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -11,7 +11,7 @@ import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material
 import { MoviesService } from '../../../../services/movies.service';
 import { Movie } from '../../../../models/Movies';
 import { UserSecurityService } from '../../../../services/user-security.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
@@ -37,6 +37,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 export class MovieInfoFormComponent implements OnInit {
 
   ngOnInit(): void {
+    if (this.movieToBeUpdated) {
+      this.movieMetadataForm.patchValue(this.movieToBeUpdated);
+    }
   }
 
   private fb = inject(FormBuilder);
@@ -44,6 +47,11 @@ export class MovieInfoFormComponent implements OnInit {
   private userService = inject(UserSecurityService)
   private dialogRef = inject(MatDialogRef<MovieInfoFormComponent>)
   private snackBar = inject(MatSnackBar)
+  private movieToBeUpdated: Movie | null
+  
+  constructor(@Inject(MAT_DIALOG_DATA) public data : Movie) {
+    this.movieToBeUpdated = data
+  }
 
   private get movieMetadaControls() {
     return this.movieMetadataForm.controls;
@@ -69,8 +77,7 @@ export class MovieInfoFormComponent implements OnInit {
 
   onSubmit(): void {
 
-
-    let newMovie : Movie = {
+    let movie : Movie = {
       title: this.movieMetadaControls.title.value,
       director: this.movieMetadaControls.director.value,
       summary: this.movieMetadaControls.summary.value,
@@ -81,9 +88,15 @@ export class MovieInfoFormComponent implements OnInit {
       rating: 0.0
     }
 
-    this.movieService.addMovie(newMovie)
+    if(this.movieToBeUpdated) {
+      this.movieService.updateMovieById(this.movieToBeUpdated.id, movie)
+    } else {
+      this.movieService.addMovie(movie)
+    }
+
     this.dialogRef.close()
-    this.snackBar.open('Movie Successfully Added', 'Confirm', {
+
+    this.snackBar.open('Movie Successfully Added/Edited', 'Confirm', {
       duration: 3000
     })
     

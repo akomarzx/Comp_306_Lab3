@@ -1,19 +1,60 @@
-<mat-card class="movie-card" appearance="outlined" (click)="onClickMovieCard(movie.id)">
-    <mat-card-header class="my-2">
-        <mat-card-title>{{movie.title}}</mat-card-title>
-    </mat-card-header>
-    <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
-    <mat-card-content class="my-2">
-        <p>Directed By: {{movie.director}}</p>
-        <p>Genre(s): {{movie.genre.join(', ')}}</p>
-        <div class="movie-summary">
-            <p>{{movie.summary}}</p>
-        </div>
-    </mat-card-content>
-    <mat-card-actions>
-        <div class="position-absolute bottom-0 start-0 m-2 d-flex">
-            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="star"></mat-icon>
-            <span class="mx-1">{{movie.rating}}</span>
-        </div>
-    </mat-card-actions>
+<mat-card class="movie-card" appearance="outlined">
+  <mat-card-header class="my-2">
+    <mat-card-title>{{ movie.title }}</mat-card-title>
+    @if (this.currentUser?.username === movie.owner) {
+    <div class="position-absolute top-0 end-0 m-2 d-flex">
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="menu"
+        aria-label="Example icon-button with a menu"
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item
+        (click)="onMovieUpdate(movie, $event)">
+          <mat-icon
+            aria-hidden="false"
+            aria-label="Example home icon"
+            fontIcon="edit"
+          ></mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-menu-item
+            (click)="onDeleteMovie(movie.id, $event)"
+        >
+          <mat-icon
+            aria-hidden="false"
+            aria-label="Example home icon"
+            fontIcon="delete"
+          ></mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+    </div>
+    }
+  </mat-card-header>
+  <img
+    mat-card-image
+    src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+    alt="Photo of a Shiba Inu"
+    (click)="onClickMovieCard(movie.id)"
+  />
+  <mat-card-content class="my-2">
+    <p>Directed By: {{ movie.director }}</p>
+    <p>Genre(s): {{ movie.genre.join(", ") }}</p>
+    <div class="movie-summary">
+      <p>{{ movie.summary }}</p>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <div class="position-absolute bottom-0 start-0 m-2 d-flex">
+      <mat-icon
+        aria-hidden="false"
+        aria-label="Example home icon"
+        fontIcon="star"
+      ></mat-icon>
+      <span class="mx-1">{{ movie.rating }}</span>
+    </div>
+  </mat-card-actions>
 </mat-card>
