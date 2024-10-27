@@ -6,7 +6,7 @@ import { MoviesService } from '../../../services/movies.service';
 import { Observable } from 'rxjs';
 import { Movie } from '../../../models/Movies';
 import { AsyncPipe } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { MovieCardComponent } from './movie-card/movie-card.component';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -24,8 +24,6 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './movie-list.component.scss'
 })
 export class MovieListComponent implements OnInit {
-
-  activedRoute = inject(ActivatedRoute)
 
   constructor(private dialog : MatDialog, 
     private movieService: MoviesService, 

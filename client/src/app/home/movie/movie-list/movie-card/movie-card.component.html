@@ -5,7 +5,7 @@
     <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
     <mat-card-content class="my-2">
         <p>Directed By: {{movie.director}}</p>
-        <p>Genre(s): {{movie.genre}}</p>
+        <p>Genre(s): {{movie.genre.join(', ')}}</p>
         <div class="movie-summary">
             <p>{{movie.summary}}</p>
         </div>

@@ -74,8 +74,8 @@ export class LoginComponent implements OnInit, OnDestroy{
 
   onTabchange() {
     this.loginForm.reset();
-    this.registrationForm.reset();
     this.loginForm.markAsUntouched()
+    this.registrationForm.reset();
     this.registrationForm.markAsUntouched()
     this.message.set('');
   }
