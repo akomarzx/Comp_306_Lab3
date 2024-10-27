@@ -11,8 +11,7 @@ import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material
 import { MoviesService } from '../../../../services/movies.service';
 import { Movie } from '../../../../models/Movies';
 import { UserSecurityService } from '../../../../services/user-security.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-movie-info-form',
@@ -28,7 +27,6 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     ReactiveFormsModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatSnackBarModule
   ],
   providers: [
     provideNativeDateAdapter()
@@ -45,8 +43,7 @@ export class MovieInfoFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private movieService = inject(MoviesService)
   private userService = inject(UserSecurityService)
-  private dialogRef = inject(MatDialogRef<MovieInfoFormComponent>)
-  private snackBar = inject(MatSnackBar)
+  private dialogRef : MatDialogRef<MovieInfoFormComponent, boolean>= inject(MatDialogRef<MovieInfoFormComponent, boolean>)
   private movieToBeUpdated: Movie | null
   
   constructor(@Inject(MAT_DIALOG_DATA) public data : Movie) {
@@ -75,7 +72,9 @@ export class MovieInfoFormComponent implements OnInit {
     {name: 'Suspense'},
   ];
 
-  onSubmit(): void {
+  onSubmit(event : Event): void {
+
+    event.stopPropagation();
 
     let movie : Movie = {
       title: this.movieMetadaControls.title.value,
@@ -94,13 +93,13 @@ export class MovieInfoFormComponent implements OnInit {
       this.movieService.addMovie(movie)
     }
 
-    this.dialogRef.close()
+    this.dialogRef.close(true)
 
-    this.snackBar.open('Movie Successfully Added/Edited', 'Confirm', {
-      duration: 3000
-    })
-    
   }
 
+  onCancel(event : Event) {
+    event.stopPropagation();
+    this.dialogRef.close()
+  }
 
 }

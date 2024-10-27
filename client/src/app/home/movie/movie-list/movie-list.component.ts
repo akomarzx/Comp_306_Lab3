@@ -1,12 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MovieAddComponent } from '../movie-add/movie-add.component';
 import { MoviesService } from '../../../services/movies.service';
 import { Observable } from 'rxjs';
 import { Movie } from '../../../models/Movies';
 import { AsyncPipe } from '@angular/common';
-import { Router } from '@angular/router';
 import { MovieCardComponent } from './movie-card/movie-card.component';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -15,7 +12,6 @@ import { MatButtonModule } from '@angular/material/button';
   standalone: true,
   imports: [
     MatIconModule,
-    MatDialogModule,
     AsyncPipe,
     MovieCardComponent,
     MatButtonModule,
@@ -25,9 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class MovieListComponent implements OnInit {
 
-  constructor(private dialog : MatDialog, 
-    private movieService: MoviesService, 
-    private router : Router){}
+  constructor( private movieService: MoviesService){}
 
   moviesList$? : Observable<Movie[]>
 
@@ -35,8 +29,4 @@ export class MovieListComponent implements OnInit {
     this.moviesList$ = this.movieService.getAllMovies()
   }
 
-  onAddMovie() {
-    let dialogRef = this.dialog.open(MovieAddComponent)
-  }
-  
 }
