@@ -9,7 +9,7 @@ import { MovieInformationComponent } from './home/movie/movie-information/movie-
 export const routes: Routes = [
     {
         path: 'home',
-        component: HomeComponent,
+        loadComponent: () => import('./home/home.component').then(m => m.HomeComponent),
         canActivate: [
             () => {
                 const router = inject(Router)
@@ -23,8 +23,14 @@ export const routes: Routes = [
             }
         ],
         children : [
-            {path: 'movies', component: MovieListComponent},
-            {path: 'movies/:id', component: MovieInformationComponent}
+            {
+                path: 'movies', 
+                loadComponent: () => import('./home/movie/movie-list/movie-list.component').then(m => m.MovieListComponent)
+            },
+            {
+                path: 'movies/:id', 
+                loadComponent: () => import('./home/movie/movie-information/movie-information.component').then(m => m.MovieInformationComponent)
+            }
         ]
     },
     { path: 'login', component: LoginComponent }

@@ -1,6 +1,8 @@
 @use '@angular/material' as mat;
 @use '../m3-theme.scss';
 @use './app/layout/home-component.theme';
+@use './app/layout/cancel-button.theme' as cb;
+@use './app/layout/home-component.theme' as home;
 
 @include mat.core();
 
@@ -10,6 +12,8 @@
 
 html {
   @include mat.all-component-themes(m3-theme.$light-theme);
+  @include cb.theme(m3-theme.$light-theme);
+  @include home.theme(m3-theme.$light-theme)
 }
 
 html, body { height: 100%; }

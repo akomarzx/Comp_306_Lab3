@@ -7,13 +7,21 @@
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content class="sidenav-content">
-    <mat-toolbar color="primary">
+    <mat-toolbar color="primary" class="d-flex justify-content-between">
       @if (isHandset$ | async) {
       <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       }
       <h1>NetRex</h1>
+      <div>
+        <div class="w-auto">
+          <button mat-raised-button (click)="onAddMovie()">
+            <mat-icon>add</mat-icon>
+            Add Movie
+          </button>
+        </div>
+      </div>
     </mat-toolbar>
     <div class="container-fluid p-2 m-2">
       <router-outlet></router-outlet>

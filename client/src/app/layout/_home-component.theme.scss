@@ -1,11 +1,15 @@
 @use "@angular/material" as mat;
 
 @mixin theme($theme) {
-  .sidenav-scroll-wrapper {
-    background-color: rgba(mat.get-theme-color($theme, primary-container), 0.75);
+  .sidenav-content {
+    background-color: mat.get-theme-color($theme, primary, 90);
+  }
+
+  button[mat-flat-button] {
+    background-color: mat.get-theme-color($theme, error, 50);
   }
 
   mat-toolbar {
-    --mat-toolbar-container-background-color: #{mat.get-theme-color($theme, primary, 90)};
+    background-color: mat.get-theme-color($theme, primary, 80);
   }
 }

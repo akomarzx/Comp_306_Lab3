@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -9,6 +9,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { MovieAddComponent } from './movie/movie-add/movie-add.component';
 
 @Component({
   selector: 'app-home',
@@ -29,10 +31,11 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private dialog : MatDialog) {}
 
   ngOnInit(): void {
     this.router.navigate(['/home/movies'])
+    
   }
   
   private breakpointObserver = inject(BreakpointObserver);
@@ -43,4 +46,8 @@ export class HomeComponent implements OnInit {
       shareReplay()
     );
 
+    onAddMovie() {
+      let dialogRef = this.dialog.open(MovieAddComponent)
+    }
+    
 }
