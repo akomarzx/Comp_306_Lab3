@@ -7,16 +7,22 @@
             <mat-card-header class="my-1 d-flex justify-content-center">
                 <img mat-card-md-image src="./assets/movie.png">
             </mat-card-header>
-            <mat-tab-group>
+            <mat-tab-group (selectedTabChange)="onTabchange()">
                 <mat-tab label="Login">
                     <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
                         <mat-card-content>
-                            <mat-form-field>
+                            <mat-form-field class="my-1">
                                 <input matInput placeholder="User Name" formControlName="username">
+                                @if (this.loginForm.controls['username'].hasError('required')) {
+                                    <mat-error>Username is <strong>required</strong></mat-error>
+                                }
                             </mat-form-field>
                             <br />
-                            <mat-form-field>
+                            <mat-form-field class="my-1">
                                 <input type="password" matInput placeholder="Password" formControlName="password" />
+                                @if (loginForm.controls['password'].hasError('required')) {
+                                    <mat-error>Password is <strong>required</strong></mat-error>
+                                }
                             </mat-form-field>
                             <div>
                                 <span>{{ message() }}</span>
@@ -32,12 +38,17 @@
                 <mat-tab label="Register">
                     <form [formGroup]="registrationForm" (ngSubmit)="onRegistrationSubmit()">
                         <mat-card-content>
-                            <mat-form-field>
+                            <mat-form-field class="my-1">
                                 <input matInput placeholder="User Name" formControlName="username">
+                                @if (registrationForm.controls['username'].hasError('required')) {
+                                    <mat-error>Username is <strong>required</strong></mat-error>
+                                }
                             </mat-form-field>
-                            <br />
-                            <mat-form-field>
+                            <mat-form-field class="my-1">
                                 <input type="password" matInput placeholder="Password" formControlName="password" />
+                                @if (registrationForm.controls['password'].hasError('required')) {
+                                    <mat-error>Password is <strong>required</strong></mat-error>
+                                }
                             </mat-form-field>
                             <div>
                                 <span>{{ message() }}</span>

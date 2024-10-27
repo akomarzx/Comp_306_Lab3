@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -32,7 +32,10 @@ import { MatDialogRef } from '@angular/material/dialog';
     provideNativeDateAdapter()
   ]
 })
-export class MovieInfoFormComponent {
+export class MovieInfoFormComponent implements OnInit {
+
+  ngOnInit(): void {
+  }
 
   private fb = inject(FormBuilder);
   private movieService = inject(MoviesService)
@@ -45,7 +48,7 @@ export class MovieInfoFormComponent {
 
   movieMetadataForm = this.fb.group({
       title: this.fb.nonNullable.control<String>('', [Validators.required]),
-      summary: this.fb.nonNullable.control<String>('', [Validators.required]),
+      summary: this.fb.nonNullable.control<String>('', [Validators.required, Validators.maxLength(250)]),
       genre: this.fb.nonNullable.control<String>('', [Validators.required]),
       director: this.fb.nonNullable.control<String>('', [Validators.required]),
       releaseDate: this.fb.nonNullable.control<String>('', [Validators.required])
@@ -70,12 +73,14 @@ export class MovieInfoFormComponent {
       releaseDate: this.movieMetadaControls.releaseDate.value,
       genre: this.movieMetadaControls.genre.value,
       id: 10,
-      owner: this.userService.currentUser?.username!
+      owner: this.userService.currentUser?.username!,
+      rating: null
     }
 
     this.movieService.addMovie(newMovie)
     
     this.dialogRef.close("Success!")
   }
+
 
 }

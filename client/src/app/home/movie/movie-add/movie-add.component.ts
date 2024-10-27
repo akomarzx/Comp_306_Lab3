@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { MovieInfoFormComponent } from '../../shared/movie-info-form/movie-info-form.component';
+import { MovieInfoFormComponent } from '../shared/movie-info-form/movie-info-form.component';
 
 @Component({
   selector: 'app-movie-add',

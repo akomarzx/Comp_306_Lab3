@@ -9,7 +9,7 @@
           <mat-form-field class="w-100">
             <input matInput placeholder="Title" formControlName="title">
             @if (movieMetadataForm.controls['title'].hasError('required')) {
-            <mat-error>Title is <strong>required</strong></mat-error>
+              <mat-error>Title is <strong>required</strong></mat-error>
             }
           </mat-form-field>
         </div>
@@ -19,6 +19,9 @@
           <textarea matInput placeholder="Summary" formControlName="summary"></textarea>
           @if (this.movieMetadataForm.controls['summary'].hasError('required')) {
             <mat-error>Summary is <strong>required</strong></mat-error>
+          }
+          @if (this.movieMetadataForm.controls['summary'].hasError('maxlength')) {
+            <mat-error>Only 250 Characters Allowed</mat-error>
           }
         </mat-form-field>
       </div>

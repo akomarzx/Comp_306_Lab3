@@ -18,7 +18,8 @@ export class MoviesService {
         genre: "Drama",
         director: "Laura Bennett",
         releaseDate: "2023-07-12",
-        owner: "owner1@example.com"
+        owner: "owner1@example.com",
+        rating: 4.2
       },
       {
         id: 2,
@@ -27,7 +28,8 @@ export class MoviesService {
         genre: "Fantasy",
         director: "Daniel Kwan",
         releaseDate: "2022-09-18",
-        owner: "owner2@example.com"
+        owner: "owner2@example.com",
+        rating: 8.5
       },
       {
         id: 3,
@@ -36,7 +38,8 @@ export class MoviesService {
         genre: "Thriller",
         director: "Maya Lopez",
         releaseDate: "2024-03-25",
-        owner: "owner3@example.com"
+        owner: "owner3@example.com",
+        rating: 9.6
       },
       {
         id: 4,
@@ -45,16 +48,18 @@ export class MoviesService {
         genre: "Mystery",
         director: "Tom Richards",
         releaseDate: "2023-11-05",
-        owner: "owner4@example.com"
+        owner: "owner4@example.com",
+        rating: 7.2
       },
       {
         id: 5,
         title: "Stars Apart",
-        summary: "In a future where humanity has colonized other planets, two star-crossed lovers fight to stay connected.",
+        summary: "sdhjasdhjlasdjalsjldkjakljsdhjasdhjlasdjalsjldkjakljsdhjasdhjlasdjalsjldkjkadkasldkalskldalskdlasdkaslkdlaskldklaskdlakljsdhjasdhjlasdjalsjldkjakljsdhjasdhjlasdjalsjldkjakljsdhjasdhjlasdjalsjldkjakljsdhjasdhjlasdjalsjldkjakljsdhjasdhjlasdjalsjldkjakljsdhjasdhjlasdjalsjldkjakljsdhjasdhjlasdjal",
         genre: "Sci-Fi Romance",
         director: "Sophie Zhang",
         releaseDate: "2021-08-20",
-        owner: "owner5@example.com"
+        owner: "owner5@example.com",
+        rating: 6.5
       }
     ])
   }

@@ -47,6 +47,7 @@ export class LoginComponent implements OnInit, OnDestroy{
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
+
   }
 
   ngOnInit(): void {
@@ -69,5 +70,13 @@ export class LoginComponent implements OnInit, OnDestroy{
 
   onRegistrationSubmit() {
     console.log(this.registrationForm.getRawValue());
+  }
+
+  onTabchange() {
+    this.loginForm.reset();
+    this.registrationForm.reset();
+    this.loginForm.markAsUntouched()
+    this.registrationForm.markAsUntouched()
+    this.message.set('');
   }
 }
