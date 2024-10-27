@@ -5,7 +5,8 @@ export interface Movie {
     genre: String,
     director: String,
     releaseDate: String,
-    owner: string
+    owner: string,
+    rating: number | null
 }
 
 export interface MovieListResponse {
