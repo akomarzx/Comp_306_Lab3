@@ -18,7 +18,7 @@ export class MoviesService {
         genre: ["Drama"],
         director: "Laura Bennett",
         releaseDate: "2023-07-12",
-        owner: "owner1@example.com",
+        owner: "r",
         rating: 4.2
       },
       {
@@ -28,7 +28,7 @@ export class MoviesService {
         genre: ["Fantasy"],
         director: "Daniel Kwan",
         releaseDate: "2022-09-18",
-        owner: "owner2@example.com",
+        owner: "r",
         rating: 8.5
       },
       {
@@ -60,6 +60,16 @@ export class MoviesService {
         releaseDate: "2021-08-20",
         owner: "owner5@example.com",
         rating: 6.5
+      },
+            {
+        id: 6,
+        title: "Stars Apart Pt. 2",
+        summary: "This is for testing",
+        genre: ["Sci-Fi", "Romance"],
+        director: "Sophie Zhang",
+        releaseDate: "2021-08-20",
+        owner: "owner5@example.com",
+        rating: 6.5
       }
     ])
   }
@@ -70,5 +80,30 @@ export class MoviesService {
 
   addMovie(newMovie : Movie) {
     this.moviesList$.next([...this.moviesList$.getValue(), newMovie])
+  }
+
+  updateMovieById(movieId : number, updatedMovie : Movie) {
+
+    const modifiedData : Movie[] = this.moviesList$.getValue().map(obj => {
+      if(obj.id === movieId) {
+        return {
+          ...obj,
+          title: updatedMovie.title,
+          summary: updatedMovie.summary,
+          director: updatedMovie.director,
+          releaseDate: updatedMovie.releaseDate,
+          genre: updatedMovie.genre
+        }
+      }
+      return obj
+    })
+
+    this.moviesList$.next(modifiedData)
+    
+  }
+
+  deleteMovieById(movieId : number) {
+    let filteredMovieList : Movie[] = this.moviesList$.getValue().filter((movie : Movie) => movie.id !== movieId)
+    this.moviesList$.next(filteredMovieList)
   }
 }

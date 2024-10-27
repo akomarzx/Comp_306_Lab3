@@ -38,5 +38,5 @@ export class MovieListComponent implements OnInit {
   onAddMovie() {
     let dialogRef = this.dialog.open(MovieAddComponent)
   }
-
+  
 }
