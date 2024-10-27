@@ -12,6 +12,7 @@ import { MoviesService } from '../../../../services/movies.service';
 import { Movie } from '../../../../models/Movies';
 import { UserSecurityService } from '../../../../services/user-security.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-movie-info-form',
@@ -26,7 +27,8 @@ import { MatDialogRef } from '@angular/material/dialog';
     MatCardModule,
     ReactiveFormsModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatSnackBarModule
   ],
   providers: [
     provideNativeDateAdapter()
@@ -41,6 +43,7 @@ export class MovieInfoFormComponent implements OnInit {
   private movieService = inject(MoviesService)
   private userService = inject(UserSecurityService)
   private dialogRef = inject(MatDialogRef<MovieInfoFormComponent>)
+  private snackBar = inject(MatSnackBar)
 
   private get movieMetadaControls() {
     return this.movieMetadataForm.controls;
@@ -49,7 +52,7 @@ export class MovieInfoFormComponent implements OnInit {
   movieMetadataForm = this.fb.group({
       title: this.fb.nonNullable.control<String>('', [Validators.required]),
       summary: this.fb.nonNullable.control<String>('', [Validators.required, Validators.maxLength(250)]),
-      genre: this.fb.nonNullable.control<String>('', [Validators.required]),
+      genre: this.fb.nonNullable.control<String[]>([], [Validators.required]),
       director: this.fb.nonNullable.control<String>('', [Validators.required]),
       releaseDate: this.fb.nonNullable.control<String>('', [Validators.required])
   });
@@ -66,6 +69,7 @@ export class MovieInfoFormComponent implements OnInit {
 
   onSubmit(): void {
 
+
     let newMovie : Movie = {
       title: this.movieMetadaControls.title.value,
       director: this.movieMetadaControls.director.value,
@@ -74,12 +78,15 @@ export class MovieInfoFormComponent implements OnInit {
       genre: this.movieMetadaControls.genre.value,
       id: 10,
       owner: this.userService.currentUser?.username!,
-      rating: null
+      rating: 0.0
     }
 
     this.movieService.addMovie(newMovie)
+    this.dialogRef.close()
+    this.snackBar.open('Movie Successfully Added', 'Confirm', {
+      duration: 3000
+    })
     
-    this.dialogRef.close("Success!")
   }
 
 
