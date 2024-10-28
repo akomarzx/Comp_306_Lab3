@@ -6,7 +6,7 @@
   }
 
   button[mat-flat-button] {
-    background-color: mat.get-theme-color($theme, error, 50);
+      background-color: mat.get-theme-color($theme, error, 50);
   }
 
   mat-toolbar {

@@ -1,5 +1,43 @@
+<div class="row d-flex justify-content-center">
+  <h3 class="text-center">Collections</h3>
+</div>
+<div class="row d-flex flex-column">
+  <h4>Filter</h4>
+  <div class="d-flex">
+    <h5 class="mt-3">By Genre</h5>
+    <mat-form-field class="w-75 mx-4">
+      <mat-label>Genres</mat-label>
+      <mat-chip-grid #reactiveChipGrid aria-label="Enter reactive form keywords" [formControl]="this.chipInputControl">
+        @for (genre of selectedGenresForFilter(); track genre.name) {
+        <mat-chip-row (removed)="remove(genre)">
+          {{genre.name}}
+          <button matChipRemove aria-label="'remove genre' + keyword">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        }
+      </mat-chip-grid>
+      <input placeholder="Genres" [matChipInputFor]="reactiveChipGrid" [matAutocomplete]="auto"/>
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+        @for (genre of this.genres; track genre.name) {
+        <mat-option [value]="genre.name">{{genre.name}}</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+  <div class="d-flex">
+    <h5 class="mt-2">By Rating</h5>
+    <mat-slider [max]="10" [min]="1" [step]="1" [discrete]="true" [showTickMarks]="false" class="mx-4">
+      <input matSliderThumb #slider [formControl]="this.ratingSliderControl">
+    </mat-slider>
+    <div>
+      <button mat-raised-button class="mx-3" (click)="onFilterClicked()">Search</button>
+      <button mat-flat-button (click)="onFilterClearClicked()">Reset</button>
+    </div>
+  </div>
+</div>
 <div class="row">
-  @for (movie of this.moviesList$ | async; track movie.id) {
-    <app-movie-card [movie]="movie" class="m-1"></app-movie-card>
+  @for (movie of this.moviesList(); track movie.id) {
+  <app-movie-card [movie]="movie" class="m-1"></app-movie-card>
   }
 </div>
