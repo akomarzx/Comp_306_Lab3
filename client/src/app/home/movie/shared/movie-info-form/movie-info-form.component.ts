@@ -45,9 +45,11 @@ export class MovieInfoFormComponent implements OnInit {
   private userService = inject(UserSecurityService)
   private dialogRef : MatDialogRef<MovieInfoFormComponent, boolean>= inject(MatDialogRef<MovieInfoFormComponent, boolean>)
   private movieToBeUpdated: Movie | null
-  
+  genres: {name: string}[]
+
   constructor(@Inject(MAT_DIALOG_DATA) public data : Movie) {
     this.movieToBeUpdated = data
+    this.genres = this.movieService.getAllGenres()
   }
 
   private get movieMetadaControls() {
@@ -62,15 +64,7 @@ export class MovieInfoFormComponent implements OnInit {
       releaseDate: this.fb.nonNullable.control<String>('', [Validators.required])
   });
 
-  genres = [
-    {name: 'Drama'},
-    {name: 'Romance'},
-    {name: 'Horror'},
-    {name: 'Sci-fi'},
-    {name: 'Classic'},
-    {name: 'Action'},
-    {name: 'Suspense'},
-  ];
+
 
   onSubmit(event : Event): void {
 

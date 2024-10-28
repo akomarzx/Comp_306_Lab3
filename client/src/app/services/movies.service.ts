@@ -74,6 +74,18 @@ export class MoviesService {
     ])
   }
 
+  getAllGenres() {
+    return [
+      {name: 'Drama'},
+      {name: 'Romance'},
+      {name: 'Horror'},
+      {name: 'Sci-fi'},
+      {name: 'Classic'},
+      {name: 'Action'},
+      {name: 'Suspense'},
+    ];
+  }
+
   getAllMovies() {
     return this.moviesList$.asObservable()
   }
