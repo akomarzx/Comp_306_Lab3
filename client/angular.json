@@ -34,9 +34,12 @@
             "styles": [
               "m3-theme.scss",
               "src/styles.scss",
-              "./node_modules/bootstrap/dist/css/bootstrap.min.css"
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "./node_modules/video.js/dist/video-js.min.css"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/video.js/dist/video.min.js"
+            ]
           },
           "configurations": {
             "production": {

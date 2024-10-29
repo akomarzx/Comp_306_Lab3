@@ -1,0 +1,46 @@
+<mat-card class="comment-section me-4">
+  <mat-card-title class="m-3">Comments</mat-card-title>
+  <mat-card-content class="my-2">
+    @if(comments.length > 0) { @for (comment of comments; track $index) {
+    <div class="comment">
+      <mat-divider></mat-divider>
+      <p>
+        <strong>{{ comment.username }}</strong
+        >: {{ comment.content }}
+      </p>
+      <small>Posted on: {{ comment.timestamp }}</small>
+    </div>
+    } }@else {
+    <p>No comments yet <strong>be the first!</strong></p>
+    }
+  </mat-card-content>
+  <mat-card-actions>
+    <form [formGroup]="commentForm" (ngSubmit)="addComment()" class="comment-form">
+      <div>
+        <mat-form-field appearance="fill" class="w-100 my-2">
+          <mat-label>Your Comment</mat-label>
+          <textarea
+            matInput
+            formControlName="content"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="2"
+            cdkAutosizeMaxRows="5"
+          ></textarea>
+          @if (commentForm.get('content')?.hasError('required')) {
+          <mat-error>Comment is required</mat-error>
+          }
+        </mat-form-field>
+      </div>
+      <div>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="commentForm.invalid"
+        >
+          Add Comment
+        </button>
+      </div>
+    </form>
+  </mat-card-actions></mat-card
+>
