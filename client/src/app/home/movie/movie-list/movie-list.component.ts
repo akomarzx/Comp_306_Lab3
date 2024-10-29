@@ -1,6 +1,6 @@
 import { Component, effect, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { MoviesService } from '../../../services/movies.service';
+import { MoviesService } from '../service/movies.service';
 import { debounce, debounceTime, Observable, single, Subject, take, takeUntil } from 'rxjs';
 import { Movie } from '../../../models/Movies';
 import { AsyncPipe } from '@angular/common';

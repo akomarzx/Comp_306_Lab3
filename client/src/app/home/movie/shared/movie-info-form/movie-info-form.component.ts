@@ -8,7 +8,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
-import { MoviesService } from '../../../../services/movies.service';
+import { MoviesService } from '../../service/movies.service';
 import { Movie } from '../../../../models/Movies';
 import { UserSecurityService } from '../../../../services/user-security.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -64,8 +64,6 @@ export class MovieInfoFormComponent implements OnInit {
       releaseDate: this.fb.nonNullable.control<String>('', [Validators.required])
   });
 
-
-
   onSubmit(event : Event): void {
 
     event.stopPropagation();
@@ -78,7 +76,8 @@ export class MovieInfoFormComponent implements OnInit {
       genre: this.movieMetadaControls.genre.value,
       id: 10,
       owner: this.userService.currentUser?.username!,
-      rating: 0.0
+      rating: 0.0,
+      url: './assets/aaa.mp4'
     }
 
     if(this.movieToBeUpdated) {

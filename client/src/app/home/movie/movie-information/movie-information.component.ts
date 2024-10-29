@@ -1,20 +1,43 @@
-import { Component, Input, signal, WritableSignal } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  signal,
+  WritableSignal,
+} from '@angular/core';
+import { VjsPlayerComponent } from './vjs-player/vjs-player.component';
+import { Movie } from '../../../models/Movies';
+import { MoviesService } from '../service/movies.service';
+import { UserSecurityService } from '../../../services/user-security.service';
+import { AsyncPipe } from '@angular/common';
+import { MovieCommentComponent } from './movie-comment/movie-comment.component';
 
 @Component({
   selector: 'app-movie-information',
   standalone: true,
-  imports: [],
+  imports: [
+    VjsPlayerComponent,
+    AsyncPipe,
+    MovieCommentComponent
+  ],
   templateUrl: './movie-information.component.html',
-  styleUrl: './movie-information.component.scss'
+  styleUrl: './movie-information.component.scss',
 })
-export class MovieInformationComponent {
+export class MovieInformationComponent implements OnInit, OnDestroy {
 
-  idx? : WritableSignal<number>
+  selectedMovie!: WritableSignal<Movie | null>;
 
-  @Input()
-  set id(id: number) {
-    this.idx = signal(id)
+  constructor(
+    private movieService: MoviesService,
+    private userService: UserSecurityService
+  ) {
+    this.selectedMovie = this.movieService.currentMovieSelected;
   }
 
+  ngOnDestroy(): void {
+  }
+
+  ngOnInit(): void {
+  }
 }

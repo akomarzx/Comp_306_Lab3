@@ -9,7 +9,7 @@ import { Movie } from '../../../../models/Movies';
 import { UserSecurityService } from '../../../../services/user-security.service';
 import { User } from '../../../../models/User';
 import { MatMenuModule } from '@angular/material/menu';
-import { MoviesService } from '../../../../services/movies.service';
+import { MoviesService } from '../../service/movies.service';
 import { MovieInfoFormComponent } from '../../shared/movie-info-form/movie-info-form.component';
 import { MovieAddComponent } from '../../movie-add/movie-add.component';
 
@@ -44,6 +44,7 @@ export class MovieCardComponent {
   private activatedRoute = inject(ActivatedRoute)
 
   onClickMovieCard(id: number) {
+    this.movieService.currentMovieSelected.set(this.movie)
     this.router.navigate([id], {relativeTo: this.activatedRoute})
   }
 
