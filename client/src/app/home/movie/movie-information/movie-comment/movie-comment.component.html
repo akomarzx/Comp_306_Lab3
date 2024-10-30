@@ -42,6 +42,7 @@
         <mat-form-field appearance="fill" class="w-100 my-2">
           <mat-label>Your Comment</mat-label>
           <textarea
+            
             matInput
             formControlName="content"
             cdkTextareaAutosize
@@ -54,7 +55,7 @@
         </mat-form-field>
       </div>
       <div>
-        <button mat-raised-button color="primary" type="submit" [disabled]="commentForm.invalid">Add Comment</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="commentForm.invalid || this.isCommentEditMode()">Add Comment</button>
       </div>
     </form>
   </mat-card-actions>
