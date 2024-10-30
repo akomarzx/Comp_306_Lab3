@@ -57,11 +57,11 @@ export class MovieInfoFormComponent implements OnInit {
   }
 
   movieMetadataForm = this.fb.group({
-      title: this.fb.nonNullable.control<String>('', [Validators.required]),
-      summary: this.fb.nonNullable.control<String>('', [Validators.required, Validators.maxLength(250)]),
-      genre: this.fb.nonNullable.control<String[]>([], [Validators.required]),
-      director: this.fb.nonNullable.control<String>('', [Validators.required]),
-      releaseDate: this.fb.nonNullable.control<String>('', [Validators.required])
+      title: this.fb.nonNullable.control<string>('', [Validators.required]),
+      summary: this.fb.nonNullable.control<string>('', [Validators.required, Validators.maxLength(250)]),
+      genre: this.fb.nonNullable.control<string[]>([], [Validators.required]),
+      director: this.fb.nonNullable.control<string>('', [Validators.required]),
+      releaseDate: this.fb.nonNullable.control<string>('', [Validators.required])
   });
 
   onSubmit(event : Event): void {
@@ -77,11 +77,12 @@ export class MovieInfoFormComponent implements OnInit {
       id: 10,
       owner: this.userService.currentUser?.username!,
       rating: 0.0,
-      url: './assets/aaa.mp4'
+      imageUrl: './assets/aaa.mp4',
+      movieUrl: './assets/aaa.mp4'
     }
 
     if(this.movieToBeUpdated) {
-      this.movieService.updateMovieById(this.movieToBeUpdated.id, movie)
+      this.movieService.updateMovieById(this.movieToBeUpdated.id!, movie)
     } else {
       this.movieService.addMovie(movie)
     }

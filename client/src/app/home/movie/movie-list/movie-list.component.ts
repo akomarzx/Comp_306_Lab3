@@ -7,11 +7,12 @@ import { AsyncPipe } from '@angular/common';
 import { MovieCardComponent } from './movie-card/movie-card.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import {  MatChipsModule } from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatCheckbox } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-movie-list',
@@ -25,28 +26,31 @@ import { MatSliderModule } from '@angular/material/slider';
     MatChipsModule,
     MatAutocompleteModule,
     ReactiveFormsModule,
-    MatSliderModule
+    MatSliderModule,
+    MatCheckbox
   ],
   templateUrl: './movie-list.component.html',
   styleUrl: './movie-list.component.scss'
 })
 export class MovieListComponent implements OnInit, OnDestroy {
 
-  private unsub : Subject<void> = new Subject<void>()
-  
+  private unsub: Subject<void> = new Subject<void>()
+
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  readonly chipInputControl = new FormControl<string[] | null>(null);
+  readonly ratingSliderControl = new FormControl<string | number | null>(1);
+
   moviesList!: WritableSignal<Movie[]>
   genres: { name: string }[]
   selectedGenresForFilter: WritableSignal<{ name: string }[]>
+  enableRatingsFilter: WritableSignal<boolean>
 
-  readonly chipInputControl = new FormControl(['']);
-  readonly ratingSliderControl = new FormControl<string | number | null>('');
-  
-  constructor(private movieService: MoviesService) {
-    
+  constructor(private movieService: MoviesService, private fb: FormBuilder) {
+    this.ratingSliderControl.disable()
     this.genres = this.movieService.getAllGenres()
     this.moviesList = signal([])
     this.selectedGenresForFilter = signal([])
+    this.enableRatingsFilter = signal(false)
   }
 
   ngOnInit(): void {
@@ -62,7 +66,6 @@ export class MovieListComponent implements OnInit, OnDestroy {
   }
 
   remove(obj: { name: string }): void {
-    console.log(obj.name);
     this.selectedGenresForFilter.update(genre => {
       return genre.filter((value) => value.name !== obj.name)
     })
@@ -77,13 +80,31 @@ export class MovieListComponent implements OnInit, OnDestroy {
   }
 
   onFilterClicked() {
-    console.log(this.chipInputControl.value)
-    console.log(this.ratingSliderControl.value)
+    if (this.chipInputControl.value != null || this.ratingSliderControl.enabled) {
+      this.moviesList.set(this.movieService.filterMovies(this.chipInputControl.value, this.ratingSliderControl.value as number))
+    }
   }
 
   onFilterClearClicked() {
+    this.movieService.getAllMovies().pipe(
+      take(1),
+    ).subscribe(movies => {
+      this.moviesList?.set(movies)
+    })
     this.chipInputControl.reset();
-    this.ratingSliderControl.reset();
     this.selectedGenresForFilter.set([])
+    this.ratingSliderControl.disable()
+    this.enableRatingsFilter.set(false)
   }
+
+  toggleEnableRatingFilter() {
+    if (this.ratingSliderControl.disabled) {
+      this.ratingSliderControl.enable()
+      this.ratingSliderControl.setValue(1)
+    } else {
+      this.ratingSliderControl.disable()
+      this.ratingSliderControl.setValue(1)
+    }
+  }
+
 }

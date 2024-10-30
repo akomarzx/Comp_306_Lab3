@@ -9,6 +9,7 @@ import { MovieInformationComponent } from './home/movie/movie-information/movie-
 export const routes: Routes = [
     {
         path: 'home',
+        title: 'MetFlex Home',
         loadComponent: () => import('./home/home.component').then(m => m.HomeComponent),
         canActivate: [
             () => {
@@ -33,5 +34,9 @@ export const routes: Routes = [
             }
         ]
     },
-    { path: 'login', component: LoginComponent }
+    { 
+        path: 'login', 
+        component: LoginComponent,
+        title: 'Metflex'
+    }
 ];

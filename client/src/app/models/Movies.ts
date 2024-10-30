@@ -1,13 +1,14 @@
 export interface Movie {
-    id: number
-    title: String,
-    summary: String,
-    genre: String[],
-    director: String,
-    releaseDate: String,
-    owner: String,
-    url: string | null,
-    rating: number | null
+    id: number | null
+    title: string,
+    summary: string,
+    genre: string[],
+    director: string,
+    releaseDate: string,
+    owner: string,
+    movieUrl: string | null,
+    imageUrl: string | null,
+    rating: number,
 }
 
 export interface MovieListResponse {
@@ -21,6 +22,7 @@ export interface Comments {
 }
 
 export interface Comment {
+    id: number | null,
     username: string,
     content: string,
     timestamp: Date
