@@ -1,6 +1,6 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { Movie } from '../../../models/Movies';
+import { BehaviorSubject, filter, Observable, of, Subject } from 'rxjs';
+import { Comment, Comments, Movie } from '../../../models/Movies';
 import { UserSecurityService } from '../../../services/user-security.service';
 @Injectable({
   providedIn: 'root',
@@ -8,8 +8,8 @@ import { UserSecurityService } from '../../../services/user-security.service';
 export class MoviesService {
 
   #moviesList$: BehaviorSubject<Movie[]>;
-  
-  currentMovieSelected : WritableSignal<Movie | null>
+
+  currentMovieSelected: WritableSignal<Movie | null>
 
   constructor(private userService: UserSecurityService) {
 
@@ -26,7 +26,8 @@ export class MoviesService {
         releaseDate: '2023-07-12',
         owner: 'r',
         rating: 4.2,
-        url: './assets/aaa.mp4',
+        movieUrl: './assets/aaa.mp4',
+        imageUrl: './assets/aaa.mp4'
       },
       {
         id: 2,
@@ -38,7 +39,8 @@ export class MoviesService {
         releaseDate: '2022-09-18',
         owner: 'r',
         rating: 8.5,
-        url: './assets/aaa.mp4',
+        movieUrl: './assets/aaa.mp4',
+        imageUrl: './assets/aaa.mp4'
       },
       {
         id: 3,
@@ -50,7 +52,8 @@ export class MoviesService {
         releaseDate: '2024-03-25',
         owner: 'owner3@example.com',
         rating: 9.6,
-        url: './assets/aaa.mp4',
+        movieUrl: './assets/aaa.mp4',
+        imageUrl: './assets/aaa.mp4'
       },
       {
         id: 4,
@@ -62,7 +65,8 @@ export class MoviesService {
         releaseDate: '2023-11-05',
         owner: 'owner4@example.com',
         rating: 7.2,
-        url: './assets/aaa.mp4',
+        movieUrl: './assets/aaa.mp4',
+        imageUrl: './assets/aaa.mp4'
       },
       {
         id: 5,
@@ -74,7 +78,8 @@ export class MoviesService {
         releaseDate: '2021-08-20',
         owner: 'owner5@example.com',
         rating: 6.5,
-        url: './assets/aaa.mp4',
+        movieUrl: './assets/aaa.mp4',
+        imageUrl: './assets/aaa.mp4'
       },
       {
         id: 6,
@@ -85,7 +90,8 @@ export class MoviesService {
         releaseDate: '2021-08-20',
         owner: 'owner5@example.com',
         rating: 6.5,
-        url: './assets/aaa.mp4',
+        movieUrl: './assets/aaa.mp4',
+        imageUrl: './assets/aaa.mp4'
       },
     ]);
   }
@@ -102,9 +108,30 @@ export class MoviesService {
     ];
   }
 
+  #movieComments: BehaviorSubject<Comments> = new BehaviorSubject<Comments>(
+    {
+      movieId: 1,
+      comments: [
+        {
+          id: 1,
+          username: 'Ronald',
+          content: "Hello World",
+          timestamp: new Date()
+        },
+        {
+          id: 2,
+          username: 'Ronald',
+          content: "Nice Movie!",
+          timestamp: new Date()
+        },
+      ]
+    }
+  )
+
   getAllMovies() {
     return this.#moviesList$.asObservable();
   }
+
 
   addMovie(newMovie: Movie) {
     this.#moviesList$.next([...this.#moviesList$.getValue(), newMovie]);
@@ -135,4 +162,59 @@ export class MoviesService {
     this.#moviesList$.next(filteredMovieList);
   }
 
+  getMovieCommentsById(movieId: number): Observable<Comments> {
+    return this.#movieComments.asObservable()
+  }
+
+  addMovieComment(newComment: Comment) {
+    let comments: Comments = this.#movieComments.getValue()
+    comments.comments = [...comments.comments, newComment]
+    this.#movieComments.next(comments)
+  }
+
+  updateCommentByCommentId(commentId: number, updatedComment: string) {
+    const modifiedData: Comment[] = this.#movieComments.getValue().comments.map((obj) => {
+      if (obj.id === commentId) {
+        return {
+          ...obj,
+          content: updatedComment,
+          timestamp: new Date()
+        };
+      }
+      return obj;
+    });
+
+    let comments: Comments = this.#movieComments.getValue()
+    comments.comments = modifiedData
+
+    this.#movieComments.next(comments)
+  }
+
+  filterMovies(genreArray: string[] | null, rating: number | null): Movie[] {
+    console.log(rating);
+    console.log(genreArray);
+    
+    let filteredMovieList: Movie[] = []
+    
+    if (genreArray) {
+      filteredMovieList = this.#moviesList$.getValue().filter(movie => {
+        return movie.genre.some(genre => genreArray.includes(genre))
+      })
+    }
+
+    if (rating) {
+      let whichArray : Movie[] = []
+      if (genreArray == null || genreArray.length < 1) {
+        whichArray = this.#moviesList$.getValue()
+      } else {
+        whichArray = filteredMovieList
+      }
+
+      filteredMovieList = whichArray.filter(movie => {
+        return movie.rating >= rating
+      })
+    }
+
+    return filteredMovieList
+  }
 }

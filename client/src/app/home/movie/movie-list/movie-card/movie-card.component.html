@@ -21,7 +21,7 @@
           <span>Edit</span>
         </button>
         <button mat-menu-item
-            (click)="onDeleteMovie(movie.id, $event)"
+            (click)="onDeleteMovie(movie.id!, $event)"
         >
           <mat-icon
             aria-hidden="false"
@@ -38,7 +38,7 @@
     mat-card-image
     src="https://material.angular.io/assets/img/examples/shiba2.jpg"
     alt="Photo of a Shiba Inu"
-    (click)="onClickMovieCard(movie.id)"
+    (click)="onClickMovieCard(movie.id!)"
   />
   <mat-card-content class="my-2">
     <p>Directed By: {{ movie.director }}</p>
