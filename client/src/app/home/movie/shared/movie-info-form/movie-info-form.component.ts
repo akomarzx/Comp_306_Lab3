@@ -12,6 +12,7 @@ import { MoviesService } from '../../service/movies.service';
 import { Movie } from '../../../../models/Movies';
 import { UserSecurityService } from '../../../../services/user-security.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-movie-info-form',
@@ -29,7 +30,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
     MatNativeDateModule,
   ],
   providers: [
-    provideNativeDateAdapter()
+    provideNativeDateAdapter(),
   ]
 })
 export class MovieInfoFormComponent implements OnInit {
@@ -47,7 +48,7 @@ export class MovieInfoFormComponent implements OnInit {
   private movieToBeUpdated: Movie | null
   genres: {name: string}[]
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data : Movie) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data : Movie, private httpCient: HttpClient) {
     this.movieToBeUpdated = data
     this.genres = this.movieService.getAllGenres()
   }
@@ -61,7 +62,9 @@ export class MovieInfoFormComponent implements OnInit {
       summary: this.fb.nonNullable.control<string>('', [Validators.required, Validators.maxLength(250)]),
       genre: this.fb.nonNullable.control<string[]>([], [Validators.required]),
       director: this.fb.nonNullable.control<string>('', [Validators.required]),
-      releaseDate: this.fb.nonNullable.control<string>('', [Validators.required])
+      releaseDate: this.fb.nonNullable.control<string>('', [Validators.required]),
+      imageUrl: this.fb.nonNullable.control<string>('', [Validators.required]),
+      movieUrl: this.fb.nonNullable.control<string>('', [Validators.required])
   });
 
   onSubmit(event : Event): void {
@@ -74,13 +77,13 @@ export class MovieInfoFormComponent implements OnInit {
       summary: this.movieMetadaControls.summary.value,
       releaseDate: this.movieMetadaControls.releaseDate.value,
       genre: this.movieMetadaControls.genre.value,
-      id: 10,
+      id: null,
       owner: this.userService.currentUser?.username!,
       rating: 0.0,
-      imageUrl: './assets/aaa.mp4',
-      movieUrl: './assets/aaa.mp4'
+      imageUrl: this.movieMetadaControls.imageUrl.value,
+      movieUrl: this.movieMetadaControls.movieUrl.value
     }
-
+    console.log(movie)
     if(this.movieToBeUpdated) {
       this.movieService.updateMovieById(this.movieToBeUpdated.id!, movie)
     } else {
@@ -96,4 +99,22 @@ export class MovieInfoFormComponent implements OnInit {
     this.dialogRef.close()
   }
 
+  onImageFileChanged(event: any) {
+    console.log(event?.target?.files[0])
+    //upload the file after upload
+    this.movieMetadataForm.patchValue({imageUrl : './assets/aaa.mp4'})
+
+    const formData = new FormData();
+
+    formData.append('file', event.target?.files[0], `test-${new Date().toDateString()}`);
+
+    this.httpCient.post('http://localhost:8080/ims/api/v1/public/upload', formData).subscribe((result) => {
+      console.log(result)
+    })
+
+  }
+
+  onMovieFileChanged(event: Event) {
+    this.movieMetadataForm.patchValue({movieUrl : './assets/aaa.mp4'})
+  }
 }
