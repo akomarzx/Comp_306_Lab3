@@ -1,6 +1,6 @@
 <form [formGroup]="movieMetadataForm" novalidate (ngSubmit)="onSubmit($event)">
   <mat-card class="p-2">
-    <mat-card-header class="my-3">
+    <mat-card-header class="my-1">
       <mat-card-title>Movie Information</mat-card-title>
     </mat-card-header>
     <mat-card-content>
@@ -9,7 +9,7 @@
           <mat-form-field class="w-100">
             <input matInput placeholder="Title" formControlName="title">
             @if (movieMetadataForm.controls['title'].hasError('required')) {
-              <mat-error>Title is <strong>required</strong></mat-error>
+            <mat-error>Title is <strong>required</strong></mat-error>
             }
           </mat-form-field>
         </div>
@@ -18,10 +18,10 @@
         <mat-form-field>
           <textarea matInput placeholder="Summary" formControlName="summary"></textarea>
           @if (this.movieMetadataForm.controls['summary'].hasError('required')) {
-            <mat-error>Summary is <strong>required</strong></mat-error>
+          <mat-error>Summary is <strong>required</strong></mat-error>
           }
           @if (this.movieMetadataForm.controls['summary'].hasError('maxlength')) {
-            <mat-error>Only 250 Characters Allowed</mat-error>
+          <mat-error>Only 250 Characters Allowed</mat-error>
           }
         </mat-form-field>
       </div>
@@ -62,6 +62,14 @@
             }
           </mat-form-field>
         </div>
+      </div>
+      <div class="row">
+        <span>Thumbnail</span>
+        <input type="file" class="file-input" (change)="onImageFileChanged($event)" accept=".jpg,jpeg,.png"/>
+      </div>
+      <div class="row">
+        <span>Movie</span>
+        <input type="file" class="file-input" (change)="onMovieFileChanged($event)" accept=".mp4"/>
       </div>
     </mat-card-content>
     <mat-card-actions class="my-3 d-flex">

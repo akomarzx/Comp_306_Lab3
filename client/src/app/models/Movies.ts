@@ -6,8 +6,8 @@ export interface Movie {
     director: string,
     releaseDate: string,
     owner: string,
-    movieUrl: string | null,
-    imageUrl: string | null,
+    movieUrl: string,
+    imageUrl: string,
     rating: number,
 }
 
