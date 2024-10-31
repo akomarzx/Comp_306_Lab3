@@ -1,0 +1,8 @@
+﻿namespace Lab3_Ejeh_Ombao_
+{
+    public class User
+    {
+        public string Username { get; set; } 
+        public string Password { get; set; }
+    }
+}

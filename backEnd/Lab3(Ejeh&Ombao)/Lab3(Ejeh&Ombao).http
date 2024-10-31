@@ -1,0 +1,6 @@
+@Lab3_Ejeh_Ombao__HostAddress = http://localhost:5200
+
+GET {{Lab3_Ejeh_Ombao__HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
