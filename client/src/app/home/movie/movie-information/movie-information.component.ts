@@ -37,6 +37,7 @@ export class MovieInformationComponent implements OnInit, OnDestroy {
 
   selectedMovie!: WritableSignal<Movie | null>;
   ratingsDropdown : FormControl = new FormControl(null, [Validators.required])
+  enableRating: WritableSignal<boolean> = signal(true)
 
   constructor(
     private movieService: MoviesService,
@@ -53,6 +54,7 @@ export class MovieInformationComponent implements OnInit, OnDestroy {
 
   addRating() {
     this.movieService.addRating(this.selectedMovie()?.id!, this.ratingsDropdown.value)
+    this.ratingsDropdown.disable({emitEvent: true})
   }
 
 }

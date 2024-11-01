@@ -26,7 +26,7 @@
         }
       </mat-select>
     </mat-form-field>
-  <button mat-flat-button [disabled]="!this.ratingsDropdown.valid" (click)="addRating()">Submit Rating</button>
+  <button mat-flat-button [disabled]="!this.ratingsDropdown.valid" (click)="addRating()" [disabled]="this.ratingsDropdown.disabled">Submit Rating</button>
 </div>
 </div>
 <div class="row my-1">

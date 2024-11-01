@@ -155,6 +155,7 @@ export class MoviesService {
       if(comments == null) {
         comments = []
       }
+      newComment.id = result.id;
       comments = [...comments!, newComment]
       this.#movieComments.next(comments);
     })
