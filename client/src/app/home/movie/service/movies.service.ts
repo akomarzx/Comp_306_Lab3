@@ -239,7 +239,7 @@ export class MoviesService {
 
   addRating(movieId: string, rating: number) {
     
-    this.http.post(`${this.#apiUri}/${movieId}/movies/rating`, rating).subscribe(() => {
+    this.http.post(`${this.#apiUri}/movies/${movieId}/rating`, rating).subscribe(() => {
       this.getAllMovies()
     })
   }
