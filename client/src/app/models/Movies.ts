@@ -1,14 +1,29 @@
-export interface Movie {
-    id: number | null
+export interface MovieApi {
+    movieId: string | null | undefined
     title: string,
     summary: string,
-    genre: string[],
+    genre: string,
+    director: string,
+    releaseDate: string,
+    owner: string,
+    movieUrl: string,
+    imageUrl: string,
+    ratings: number[],
+    comments: Comment[]
+}
+
+export interface Movie {
+    id: string | null
+    title: string,
+    summary: string,
+    genre: string,
     director: string,
     releaseDate: string,
     owner: string,
     movieUrl: string,
     imageUrl: string,
     rating: number,
+    comments: Comment[]
 }
 
 export interface MovieListResponse {
@@ -22,8 +37,12 @@ export interface Comments {
 }
 
 export interface Comment {
-    id: number | null,
+    id: string,
     username: string,
     content: string,
     timestamp: Date
+}
+
+export interface MovieUploadResponse {
+    s3Url: string
 }

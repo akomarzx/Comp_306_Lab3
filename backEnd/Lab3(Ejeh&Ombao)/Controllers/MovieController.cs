@@ -1,4 +1,5 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
+using Amazon.Util.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +10,11 @@ namespace Lab3_Ejeh_Ombao_.Controllers
     public class MoviesController : ControllerBase
     {
         private readonly MovieRepository _movieRepository;
-
-        public MoviesController(MovieRepository movieRepository)
+        private readonly S3Service _s3Service;
+        public MoviesController(MovieRepository movieRepository, S3Service s3Service)
         {
             _movieRepository = movieRepository;
+            _s3Service = s3Service;
         }
 
         [HttpPost("create-movie")]
@@ -50,10 +52,10 @@ namespace Lab3_Ejeh_Ombao_.Controllers
             try
             {
                 var stream = await _movieRepository.DownloadMovieAsync(movieId);
-                var movieName = Path.GetFileName(movie.MovieUrl); 
+                var movieName = Path.GetFileName(movie.MovieUrl);
 
                 // Return the file as a download
-                return File(stream, "video/mp4", movieName); 
+                return File(stream, "video/mp4", movieName);
             }
             catch (Exception ex)
             {
@@ -63,13 +65,9 @@ namespace Lab3_Ejeh_Ombao_.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMovie(string id, [FromBody] Movie movie)
+        public async Task<IActionResult> UpdateMovie(string id, [FromBody] UpdateMovie movie)
         {
-            if (id != movie.MovieId)
-            {
-                return BadRequest();
-            }
-            await _movieRepository.UpdateMovieAsync(movie);
+            await _movieRepository.UpdateMovieAsync(id, movie);
             return NoContent();
         }
 
@@ -84,59 +82,58 @@ namespace Lab3_Ejeh_Ombao_.Controllers
             return true;
         }
 
-        [HttpGet("by-rating/{minRating}")]
-        public async Task<ActionResult<List<Movie>>> GetMoviesByRating(int minRating)
+        [HttpGet("filter-rating")]
+        public async Task<ActionResult<List<Movie>>> GetMoviesByRating([FromQuery(Name = "rating")] int minRating)
         {
-            var movies = await _movieRepository.GetMoviesByAverageRatingAsync(minRating);
-            return movies.Count > 0 ? Ok(movies) : NotFound();
+            return await _movieRepository.GetMoviesByAverageRatingAsync(minRating);
         }
 
-        [HttpGet("by-genre/{genre}")]
-        public async Task<ActionResult<List<Movie>>> GetMoviesByGenre(string genre)
+        [HttpGet("filter-genre")]
+        public async Task<ActionResult<List<Movie>>> GetMoviesByGenre([FromQuery(Name = "genre")] string genre)
         {
-            var movies = await _movieRepository.GetMoviesByGenreAsync(genre);
-            return movies.Count > 0 ? Ok(movies) : NotFound();
+            return await _movieRepository.GetMoviesByGenreAsync(genre);
         }
 
         // POST: api/movie/{movieId}/comment
         [HttpPost("{movieId}/comment")]
-        public async Task<IActionResult> AddComment(string movieId, [FromBody] Comment comment)
+        public async Task<ActionResult<Comment>> AddComment(string movieId, [FromBody] Comment comment)
         {
             if (comment == null || string.IsNullOrEmpty(comment.User) || string.IsNullOrEmpty(comment.Text))
             {
                 return BadRequest("Invalid comment data.");
             }
 
-            bool result = await _movieRepository.AddCommentToMovieAsync(comment.User, movieId, comment.Text);
+            Comment result = await _movieRepository.AddCommentToMovieAsync(comment.User, movieId, comment.Text);
 
-            if (result)
+            if (result is not null)
             {
-                return Ok("Comment added successfully.");
+                return Ok(comment);
             }
             return NotFound("Movie not found.");
         }
 
         // PUT: api/movie/{movieId}/comment
         [HttpPut("{movieId}/comment")]
-        public async Task<IActionResult> EditComment(string movieId, [FromBody] Comment editComment)
+        public async Task<ActionResult<Comment>> EditComment(string movieId, [FromBody] Comment editComment)
         {
-            if (editComment == null || string.IsNullOrEmpty(editComment.User) || string.IsNullOrEmpty(editComment.Text) )
+            if (editComment == null || string.IsNullOrEmpty(editComment.User) || string.IsNullOrEmpty(editComment.Text))
             {
                 return BadRequest("Invalid edit comment data.");
             }
 
-            bool result = await _movieRepository.EditCommentAsync(editComment.Id, editComment.User, movieId, editComment.Text);
+            Comment result = await _movieRepository.EditCommentAsync(movieId, editComment);
 
-            if (result)
+            if (result is not null)
             {
-                return Ok("Comment edited successfully.");
+                return Ok(result);
             }
             return NotFound("Comment not found or you are not authorized to edit it.");
         }
+
         [HttpPost("{movieId}/rating")]
         public async Task<IActionResult> AddRating(string movieId, [FromBody] int ratingValue)
         {
-            if (ratingValue < 1 || ratingValue > 11) 
+            if (ratingValue < 1 || ratingValue > 11)
             {
                 return BadRequest("Rating value must be between 1 and 5.");
             }
@@ -145,11 +142,28 @@ namespace Lab3_Ejeh_Ombao_.Controllers
 
             if (success)
             {
-                return Ok("Rating added successfully.");
+                return NoContent();
             }
             return NotFound("Movie not found.");
         }
 
+
+        [HttpPost("upload")]
+        public async Task<ActionResult<MovieUploadResponse>> Upload([FromForm] IFormFile file)
+        {
+            string s3Url = await this._s3Service.UploadFileAsync(file);
+
+            if (string.IsNullOrWhiteSpace(s3Url))
+            {
+                return Problem("Cannot Upload");
+            }
+            
+            return Ok(new MovieUploadResponse()
+            {
+                S3Url = s3Url
+            });
+
+        }
 
     }
 }

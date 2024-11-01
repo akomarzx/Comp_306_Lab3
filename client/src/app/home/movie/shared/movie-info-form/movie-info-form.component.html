@@ -7,7 +7,7 @@
       <div class="row my-2">
         <div class="column">
           <mat-form-field class="w-100">
-            <input matInput placeholder="Title" formControlName="title">
+            <input matInput placeholder="Title" formControlName="title" />
             @if (movieMetadataForm.controls['title'].hasError('required')) {
             <mat-error>Title is <strong>required</strong></mat-error>
             }
@@ -16,11 +16,16 @@
       </div>
       <div class="row my-2">
         <mat-form-field>
-          <textarea matInput placeholder="Summary" formControlName="summary"></textarea>
-          @if (this.movieMetadataForm.controls['summary'].hasError('required')) {
+          <textarea
+            matInput
+            placeholder="Summary"
+            formControlName="summary"
+          ></textarea>
+          @if (this.movieMetadataForm.controls['summary'].hasError('required'))
+          {
           <mat-error>Summary is <strong>required</strong></mat-error>
-          }
-          @if (this.movieMetadataForm.controls['summary'].hasError('maxlength')) {
+          } @if
+          (this.movieMetadataForm.controls['summary'].hasError('maxlength')) {
           <mat-error>Only 250 Characters Allowed</mat-error>
           }
         </mat-form-field>
@@ -42,7 +47,11 @@
       <div class="row my-2">
         <div class="column">
           <mat-form-field class="w-100">
-            <input matInput placeholder="Director(s)" formControlName="director">
+            <input
+              matInput
+              placeholder="Director(s)"
+              formControlName="director"
+            />
             @if (movieMetadataForm.controls['director'].hasError('required')) {
             <mat-error>Director is <strong>required</strong></mat-error>
             }
@@ -53,28 +62,61 @@
         <div class="column">
           <mat-form-field class="w-100">
             <mat-label>Release Date</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="releaseDate">
+            <input
+              matInput
+              [matDatepicker]="picker"
+              formControlName="releaseDate"
+            />
             <mat-hint>MM/DD/YYYY</mat-hint>
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
             <mat-datepicker #picker disabled="false"></mat-datepicker>
-            @if (movieMetadataForm.controls['releaseDate'].hasError('required')) {
+            @if (movieMetadataForm.controls['releaseDate'].hasError('required'))
+            {
             <mat-error>Release Date is <strong>required</strong></mat-error>
             }
           </mat-form-field>
         </div>
       </div>
+      @if(this.movieToBeUpdated == null) {
       <div class="row">
         <span>Thumbnail</span>
-        <input type="file" class="file-input" (change)="onImageFileChanged($event)" accept=".jpg,jpeg,.png"/>
+        <input
+          type="file"
+          class="file-input"
+          (change)="onImageFileChanged($event)"
+          accept=".jpg,jpeg,.png"
+        />
       </div>
       <div class="row">
         <span>Movie</span>
-        <input type="file" class="file-input" (change)="onMovieFileChanged($event)" accept=".mp4"/>
+        <input
+          type="file"
+          class="file-input"
+          (change)="onMovieFileChanged($event)"
+          accept=".mp4"
+        />
       </div>
+      }
     </mat-card-content>
     <mat-card-actions class="my-3 d-flex">
-      <button mat-raised-button type="submit" [disabled]="!this.movieMetadataForm.valid">Submit</button>
-      <button mat-flat-button type="button" (click)="onCancel($event)" class="cancel-button ms-2">Cancel</button>
+      <button
+        mat-raised-button
+        type="submit"
+        [disabled]="!this.movieMetadataForm.valid"
+      >
+        Submit
+      </button>
+      <button
+        mat-flat-button
+        type="button"
+        (click)="onCancel($event)"
+        class="cancel-button ms-2"
+      >
+        Cancel
+      </button>
     </mat-card-actions>
   </mat-card>
 </form>

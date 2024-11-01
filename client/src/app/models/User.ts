@@ -1,9 +1,7 @@
 export class User {
-    userId: number
     username: string
 
-    constructor(id: number, username: string) {
-        this.userId = id
+    constructor(username: string) {
         this.username = username
     }
 }

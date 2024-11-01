@@ -43,14 +43,14 @@ export class MovieCardComponent {
   private router : Router = inject(Router)
   private activatedRoute = inject(ActivatedRoute)
 
-  onClickMovieCard(id: number) {
+  onClickMovieCard(id: string) {
     this.movieService.currentMovieSelected.set(this.movie)
     this.router.navigate([id], {relativeTo: this.activatedRoute})
   }
 
-  onDeleteMovie(movieId : number, event: Event) {
+  onDeleteMovie(movieId : string, event: Event) {
     event.stopPropagation()
-    this.movieService.deleteMovieById(movieId)
+    this.movieService.deleteMovieById(movieId.toString())
   }
 
   onMovieUpdate(movieToUpdate : Movie, event : Event) {

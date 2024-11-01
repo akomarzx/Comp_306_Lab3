@@ -17,7 +17,18 @@
   <p>Directed By: {{this.selectedMovie()?.director}}</p>
   <p>Genre(s): {{this.selectedMovie()?.genre}}</p>
   <p>Summary: {{this.selectedMovie()?.summary}}</p>
+  <div class="row my-2 w-25">
+    <mat-form-field>
+      <mat-label for="rating">Rate this movie:</mat-label>
+      <mat-select id="rating" [formControl]="this.ratingsDropdown">
+        @for (val of [1,2,3,4,5,6,7,8,9,10]; track $index) {
+          <mat-option [value]="val">{{val}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  <button mat-flat-button [disabled]="!this.ratingsDropdown.valid" (click)="addRating()">Submit Rating</button>
+</div>
 </div>
 <div class="row my-1">
-  <app-movie-comment></app-movie-comment>
+  <app-movie-comment [currentMovieId]="this.selectedMovie()?.id!"></app-movie-comment>
 </div>

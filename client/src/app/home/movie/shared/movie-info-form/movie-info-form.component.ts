@@ -1,4 +1,4 @@
-import { Component, Inject, inject, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit, signal, WritableSignal } from '@angular/core';
 
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -9,10 +9,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { MoviesService } from '../../service/movies.service';
-import { Movie } from '../../../../models/Movies';
+import { Movie, MovieApi, MovieUploadResponse } from '../../../../models/Movies';
 import { UserSecurityService } from '../../../../services/user-security.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-movie-info-form',
@@ -37,7 +38,15 @@ export class MovieInfoFormComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.movieToBeUpdated) {
-      this.movieMetadataForm.patchValue(this.movieToBeUpdated);
+      this.movieMetadataForm.patchValue({
+        title: this.movieToBeUpdated.title,
+        summary: this.movieToBeUpdated.summary,
+        genre: this.movieToBeUpdated.genre.split(','),
+        director: this.movieToBeUpdated.director,
+        releaseDate: this.movieToBeUpdated.releaseDate,
+        imageUrl: this.movieToBeUpdated.imageUrl,
+        movieUrl: this.movieToBeUpdated.movieUrl
+      });
     }
   }
 
@@ -45,7 +54,8 @@ export class MovieInfoFormComponent implements OnInit {
   private movieService = inject(MoviesService)
   private userService = inject(UserSecurityService)
   private dialogRef : MatDialogRef<MovieInfoFormComponent, boolean>= inject(MatDialogRef<MovieInfoFormComponent, boolean>)
-  private movieToBeUpdated: Movie | null
+  movieToBeUpdated: Movie | null
+  
   genres: {name: string}[]
 
   constructor(@Inject(MAT_DIALOG_DATA) public data : Movie, private httpCient: HttpClient) {
@@ -71,19 +81,22 @@ export class MovieInfoFormComponent implements OnInit {
 
     event.stopPropagation();
 
-    let movie : Movie = {
+    console.log(this.movieMetadataForm.getRawValue())
+
+    let movie : MovieApi = {
       title: this.movieMetadaControls.title.value,
       director: this.movieMetadaControls.director.value,
       summary: this.movieMetadaControls.summary.value,
       releaseDate: this.movieMetadaControls.releaseDate.value,
-      genre: this.movieMetadaControls.genre.value,
-      id: null,
+      genre: this.movieMetadaControls.genre.value.join(),
+      movieId: '',
       owner: this.userService.currentUser?.username!,
-      rating: 0.0,
+      ratings: [],
       imageUrl: this.movieMetadaControls.imageUrl.value,
-      movieUrl: this.movieMetadaControls.movieUrl.value
+      movieUrl: this.movieMetadaControls.movieUrl.value,
+      comments: []
     }
-    console.log(movie)
+    
     if(this.movieToBeUpdated) {
       this.movieService.updateMovieById(this.movieToBeUpdated.id!, movie)
     } else {
@@ -100,21 +113,27 @@ export class MovieInfoFormComponent implements OnInit {
   }
 
   onImageFileChanged(event: any) {
-    console.log(event?.target?.files[0])
-    //upload the file after upload
-    this.movieMetadataForm.patchValue({imageUrl : './assets/aaa.mp4'})
 
     const formData = new FormData();
-
     formData.append('file', event.target?.files[0], `test-${new Date().toDateString()}`);
 
-    this.httpCient.post('http://localhost:8080/ims/api/v1/public/upload', formData).subscribe((result) => {
-      console.log(result)
+    this.movieService.uploadFileToS3(formData).pipe(take(1)).subscribe((result) => {
+      console.log(result.s3Url)
+      this.movieMetadataForm.patchValue({imageUrl: result.s3Url})
+      this.movieMetadataForm.updateValueAndValidity()
     })
-
   }
 
-  onMovieFileChanged(event: Event) {
-    this.movieMetadataForm.patchValue({movieUrl : './assets/aaa.mp4'})
+  onMovieFileChanged(event: any) {
+    
+    const formData = new FormData();
+    formData.append('file', event.target?.files[0], `test-${new Date().toDateString()}`);
+
+    this.movieService.uploadFileToS3(formData).pipe(take(1)).subscribe((result) => {
+      console.log(result.s3Url)
+      this.movieMetadataForm.patchValue({movieUrl: result.s3Url})
+      this.movieMetadataForm.updateValueAndValidity()
+    })
+
   }
 }

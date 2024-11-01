@@ -30,22 +30,27 @@ export class LoginComponent implements OnInit, OnDestroy{
   loginForm : FormGroup;
   registrationForm : FormGroup;
   message : WritableSignal<String>;
-
+  currentTabIndex : number
 
   constructor(private formBuilder : FormBuilder, 
     private userSecService : UserSecurityService, 
     private router : Router){
 
     this.message = signal('')
+    this.currentTabIndex = 0
 
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.required],
-      password: ['', Validators.required]
+      password: ['', [Validators.required,
+        Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')]
+      ]
     });
 
     this.registrationForm = this.formBuilder.group({
       username: ['', Validators.required],
-      password: ['', Validators.required]
+      password: ['', [Validators.required,
+        Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')]
+      ]
     });
 
   }
@@ -60,16 +65,29 @@ export class LoginComponent implements OnInit, OnDestroy{
     let username = this.loginForm.get('username')?.value
     let password = this.loginForm.get('password')?.value
 
-    if(this.userSecService.authenticateUser(username, password)) {
-      this.router.navigate(['home'])
-    } else {
-      this.message.set("Incorrect Credentials")
-    }
-    
+    this.userSecService.authenticateUser(username, password).subscribe({
+      next: (result) => {
+          this.userSecService.storeUser(username)
+          this.router.navigate(['home'])
+      },
+      error: (error) => {
+        this.message.set(error.error)
+      }
+    })
+   
   }
 
   onRegistrationSubmit() {
-    console.log(this.registrationForm.getRawValue());
+    this.userSecService.registerUser(this.registrationForm.controls['username'].value, this.registrationForm.controls['password'].value).subscribe({
+      next: (result) => {
+        this.message.set("Registration Successful")
+        this.currentTabIndex = 0
+        this.loginForm.patchValue(this.registrationForm.getRawValue())
+      },
+      error: (error) => {
+        this.message.set(`Registration Failed - ${error?.description}`)
+      }
+    })
   }
 
   onTabchange() {

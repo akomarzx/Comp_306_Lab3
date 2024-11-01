@@ -30,15 +30,15 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class MovieCommentComponent implements OnInit, OnDestroy {
 
-  #movieId!: number
-  comments!: Observable<Comments>;
+  #movieId!: string
+  comments!: Observable<Comment[] | null>;
   commentForm: FormGroup;
   commentEditForm: FormGroup
   isCommentEditMode: WritableSignal<boolean>
-  currentCommentIdBeingEdited: WritableSignal<number | null>
+  currentCommentIdBeingEdited: WritableSignal<string | null>
 
   @Input()
-  set currentMovieId(id: number) {
+  set currentMovieId(id: string) {
     this.#movieId = id
   }
 
@@ -53,31 +53,31 @@ export class MovieCommentComponent implements OnInit, OnDestroy {
     this.currentCommentIdBeingEdited = signal(null)
   }
   ngOnInit(): void {
-    this.comments = this.movieService.getMovieCommentsById(this.currentMovieId)
+    this.comments = this.movieService.getMovieCommentsById(this.#movieId)
   }
 
   ngOnDestroy(): void {
   }
 
   saveComment() {
-    if (this.commentForm.valid) {
+    
+    if (this.commentForm.valid || this.commentEditForm.valid) {
       let content: string
-      let isEditMode = this.isCommentEditMode()
 
-      if (isEditMode) {
+      if (this.isCommentEditMode()) {
         content = this.commentEditForm.get('content')?.value
-        this.movieService.updateCommentByCommentId(this.currentCommentIdBeingEdited()!, content)
+        this.movieService.updateCommentByCommentId(this.#movieId ,this.currentCommentIdBeingEdited()!, content)
         this.isCommentEditMode.set(false)
         this.currentCommentIdBeingEdited.set(null)
       } else {
         content = this.commentForm.get('content')?.value
         const newComment: Comment = {
-          id: Math.floor(Math.random() * 500),
+          id: '',
           username: this.userService.currentUser?.username!,
           content: content,
           timestamp: new Date(),
         };
-        this.movieService.addMovieComment(newComment)
+        this.movieService.addMovieComment(newComment, this.#movieId)
         this.commentForm.reset();
         this.commentForm.get('content')?.setErrors(null)
       }
@@ -98,7 +98,9 @@ export class MovieCommentComponent implements OnInit, OnDestroy {
   canEditComment(owner: string, timestamp: Date) {
 
     const now = new Date();
-    const timeDifference = now.getTime() - timestamp.getTime();
+    const mine = new Date(timestamp)
+
+    const timeDifference = now.getTime() - mine.getTime();
     const hoursDifference = timeDifference / (1000 * 60 * 60); // Convert milliseconds to hours
 
     return (owner === this.userService.currentUser?.username) && (hoursDifference < 24)

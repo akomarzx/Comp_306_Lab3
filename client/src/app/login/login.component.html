@@ -7,7 +7,7 @@
             <mat-card-header class="my-1 d-flex justify-content-center">
                 <img mat-card-md-image src="./assets/movie.png">
             </mat-card-header>
-            <mat-tab-group (selectedTabChange)="onTabchange()">
+            <mat-tab-group [(selectedIndex)]="this.currentTabIndex">
                 <mat-tab label="Login">
                     <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
                         <mat-card-content>
@@ -22,6 +22,9 @@
                                 <input type="password" matInput placeholder="Password" formControlName="password" />
                                 @if (loginForm.controls['password'].hasError('required')) {
                                     <mat-error>Password is <strong>required</strong></mat-error>
+                                }
+                                @if (loginForm.controls['password'].hasError('pattern')) {
+                                    <mat-error>Password is <strong>weak try with non alphanumeric and at least 6 characters and 1 number</strong></mat-error>
                                 }
                             </mat-form-field>
                             <div>
@@ -48,6 +51,9 @@
                                 <input type="password" matInput placeholder="Password" formControlName="password" />
                                 @if (registrationForm.controls['password'].hasError('required')) {
                                     <mat-error>Password is <strong>required</strong></mat-error>
+                                }
+                                @if (registrationForm.controls['password'].hasError('pattern')) {
+                                    <mat-error>Password is <strong>weak try with non alphanumeric and at least 6 characters and 1 number</strong></mat-error>
                                 }
                             </mat-form-field>
                             <div>

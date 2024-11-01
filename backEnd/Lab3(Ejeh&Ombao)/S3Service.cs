@@ -1,6 +1,7 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
+using Amazon.Util.Internal;
 
 namespace Lab3_Ejeh_Ombao_
 {
@@ -48,13 +49,16 @@ namespace Lab3_Ejeh_Ombao_
             return response.ResponseStream;
         }
 
-        public async Task<string> UploadFileAsync(string filePath)
+        public async Task<string> UploadFileAsync(IFormFile file)
         {
             var fileTransferUtility = new TransferUtility(_s3Client);
-            var fileName = Path.GetFileName(filePath);
+            string fileName = $"{DateTime.Now.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss")}_{Guid.NewGuid()}";
+            var memoryStream = new MemoryStream();
+
+            await file.CopyToAsync(memoryStream);
 
             // Upload the file to the specified S3 bucket
-            await fileTransferUtility.UploadAsync(filePath, "lab3-ejeh-ombao", fileName);
+            await fileTransferUtility.UploadAsync(memoryStream, "lab3-ejeh-ombao", fileName);
 
             // Return the URL of the uploaded file
             return $"https://lab3-ejeh-ombao.s3.amazonaws.com/{fileName}";

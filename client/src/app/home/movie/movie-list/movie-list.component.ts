@@ -13,6 +13,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckbox } from '@angular/material/checkbox';
+import log from 'video.js/dist/types/utils/log';
 
 @Component({
   selector: 'app-movie-list',
@@ -81,7 +82,12 @@ export class MovieListComponent implements OnInit, OnDestroy {
 
   onFilterClicked() {
     if (this.chipInputControl.value != null || this.ratingSliderControl.enabled) {
-      this.moviesList.set(this.movieService.filterMovies(this.chipInputControl.value, this.ratingSliderControl.value as number))
+      let ratingValueToFilter = this.ratingSliderControl.enabled ? this.ratingSliderControl.value as number : null
+      this.movieService.filterMovies(this.chipInputControl.value, ratingValueToFilter).pipe(
+        takeUntil(this.unsub)
+      ).subscribe((value) => {
+        this.moviesList.set(value)
+      })
     }
   }
 

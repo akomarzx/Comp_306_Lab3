@@ -6,6 +6,7 @@
     using Amazon.DynamoDBv2.Model;
     using Amazon.S3.Model;
     using Amazon.S3;
+    using System.Globalization;
 
     public class MovieRepository
     {
@@ -21,13 +22,8 @@
         // Create a new movie
         public async Task<bool> CreateMovieAsync(Movie movie, string movieFilePath, string imageFilePath)
         {
+            movie.MovieId = Guid.NewGuid().ToString();
             // Upload the movie and image files to S3
-            await _s3Service.UploadFileAsync(movieFilePath);
-            await _s3Service.UploadFileAsync(imageFilePath);
-
-            movie.MovieUrl = Path.GetFileName(movieFilePath);
-            movie.ImageUrl = Path.GetFileName(imageFilePath);
-
             var context = new DynamoDBContext(_dynamoDb);
             await context.SaveAsync(movie);
             return true;
@@ -44,14 +40,27 @@
         public async Task<List<Movie>> GetAllMoviesAsync()
         {
             var context = new DynamoDBContext(_dynamoDb);
-            return await context.ScanAsync<Movie>(null).GetRemainingAsync();
+            List<Movie> movies = await context.ScanAsync<Movie>(null).GetRemainingAsync(); 
+            movies.ForEach(movies => {
+                movies.Ratings ??= new List<int>();
+            });
+            return movies;
         }
 
         // Update an existing movie
-        public async Task<bool> UpdateMovieAsync(Movie movie)
+        public async Task<bool> UpdateMovieAsync(string movieId, UpdateMovie movie)
         {
             var context = new DynamoDBContext(_dynamoDb);
-            await context.SaveAsync(movie); 
+            Movie movieToBeUpdated = await context.LoadAsync<Movie>(movieId);
+
+            movieToBeUpdated.Title = movie.Title;
+            movieToBeUpdated.Summary = movie.Summary;
+            movieToBeUpdated.Genre = movie.Genre;
+            movieToBeUpdated.Director = movie.Director;
+            movieToBeUpdated.ReleaseDate = movie.ReleaseDate;
+
+            await context.SaveAsync(movieToBeUpdated); 
+            
             return true;
         }
 
@@ -118,6 +127,10 @@
                 movie.Ratings != null && movie.Ratings.Count > 0 &&
                 movie.Ratings.Average() > minAverageRating).ToList();
 
+            filteredMovies.ForEach(movies => {
+                movies.Ratings ??= new List<int>();
+            });
+
             return filteredMovies;
         }
 
@@ -131,18 +144,22 @@
             // Perform a scan to filter by genre
             var scanConditions = new List<ScanCondition>
     {
-        new ScanCondition("Genre", ScanOperator.Equal, genre)
+        new ScanCondition("Genre", ScanOperator.Contains, genre)
     };
 
             var search = context.ScanAsync<Movie>(scanConditions);
             var result = await search.GetRemainingAsync();
+
+            result.ForEach(movies => {
+                movies.Ratings ??= new List<int>();
+            });
 
             return result;
         }
 
 
         // Add a comment to a movie
-        public async Task<bool> AddCommentToMovieAsync(string user, string movieId, string commentText)
+        public async Task<Comment> AddCommentToMovieAsync(string user, string movieId, string commentText)
         {
             var context = new DynamoDBContext(_dynamoDb);
             var movie = await context.LoadAsync<Movie>(movieId);
@@ -152,21 +169,21 @@
                 // Create a new comment with a unique ID
                 var newComment = new Comment
                 {
-                    Id = movie.Comments.Count > 0 ? movie.Comments.Max(c => c.Id) + 1 : 1,
+                    Id = Guid.NewGuid().ToString(),
                     User = user,
                     Text = commentText,
-                    
+                    CreatedAt = DateTime.Now
                 };
 
                 movie.Comments.Add(newComment);
                 await context.SaveAsync(movie);
-                return true;
+                return newComment;
             }
-            return false;
+            return null;
         }
 
 
-        public async Task<bool> EditCommentAsync(int commentId, string user, string movieId, string commentText)
+        public async Task<Comment> EditCommentAsync(string movieId, Comment updatedComment)
         {
             var context = new DynamoDBContext(_dynamoDb);
             var movie = await context.LoadAsync<Movie>(movieId);
@@ -175,16 +192,17 @@
             {
                 // Find the comment that matches the ID and user email
                 var commentToEdit = movie.Comments
-                    .FirstOrDefault(c => c.Id == commentId && c.User == user);
+                    .FirstOrDefault(c => c.Id == updatedComment.Id && c.User == updatedComment.User);
 
                 if (commentToEdit != null)
                 {
-                    commentToEdit.Text = commentText;
+                    commentToEdit.Text = updatedComment.Text;
+                    commentToEdit.CreatedAt = DateTime.Now;
                     await context.SaveAsync(movie);
-                    return true;
+                    return updatedComment;
                 }
             }
-            return false;
+            return null;
         }
         public async Task<bool> AddRatingToMovieAsync(string movieId, int ratingValue)
         {
@@ -193,6 +211,9 @@
 
             if (movie != null && ratingValue >= 1 && ratingValue <= 10) 
             {
+                if(movie.Ratings is null) {
+                    movie.Ratings = new List<int>();
+                }
                 // Add the rating to the movie's ratings list
                 movie.Ratings.Add(ratingValue);
                 await context.SaveAsync(movie);
