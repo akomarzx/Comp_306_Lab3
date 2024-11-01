@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, exhaustMap, Observable, of, switchMap } from 'rxjs';
 import { User } from '../models/User';
 import { HttpClient } from '@angular/common/http';
-
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class UserSecurityService {
 
-  #apiUri = 'http://localhost:5200/api'
+  #apiUri = environment.apiUri
 
   private user : BehaviorSubject<User|null>
   
